@@ -1,3 +1,5 @@
+var week=1;
+
 const competitionData = {
     numberOfWeeks: 8
 }
@@ -23,14 +25,13 @@ const display = (function () {
             const option = document.createElement("option");
             option.value = i;
             option.textContent = `Week ${i}`;
+            if (i === week) option.selected = true;
             select.appendChild(option);
         }
 
         // Append label and select to the container
         return {select}
     }
-
-    dropdown = createDropdown ();
 
     const displayArrows = function() {
         divs.navDiv.innerHTML="";
@@ -41,15 +42,43 @@ const display = (function () {
 
         leftArrowDiv.innerHTML=`<input type="image" id="left-arrow" alt="Previous" src=${images.arrowLeft} width="60px"/>`;
         rightArrowDiv.innerHTML=`<input type="image" id="right-arrow" alt="Next" src=${images.arrowRight} width="60px"/>`;
-        // weekSelectDiv.innerHTML=dropdown.label + dropdown.select;
+        dropdown = createDropdown ();
 
 
-        divs.navDiv.appendChild(leftArrowDiv);
+        if (week>1) {divs.navDiv.appendChild(leftArrowDiv)};
         divs.navDiv.appendChild(dropdown.select);
-        divs.navDiv.appendChild(rightArrowDiv);
+        if (week<competitionData.numberOfWeeks) {divs.navDiv.appendChild(rightArrowDiv)};
     }
 
     return {displayArrows};
 })();
 
+
+const interface = (function () {
+    const arrowListeners = function () {
+        divs.navDiv.addEventListener("click", function (e) {
+            if (e.target.id === "left-arrow" && week > 1) {
+                week--;
+                display.displayArrows();
+                console.log(week);
+            } else if (e.target.id === "right-arrow" && week < competitionData.numberOfWeeks) {
+                week++;
+                display.displayArrows();
+                console.log(week);
+            }
+        });
+
+        divs.navDiv.addEventListener("change", function (e) {
+            if (e.target.id === "week-select") {
+                week = parseInt(e.target.value);
+                display.displayArrows();
+                console.log(week);
+            }
+        });
+    }
+
+    return { arrowListeners };
+})();
+
 display.displayArrows();
+interface.arrowListeners();
