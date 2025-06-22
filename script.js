@@ -25,7 +25,6 @@ const display = (function () {
             const option = document.createElement("option");
             option.value = i;
             option.textContent = `Week ${i}`;
-            if (i === week) option.selected = true;
             select.appendChild(option);
         }
 
@@ -36,21 +35,42 @@ const display = (function () {
     const displayArrows = function() {
         divs.navDiv.innerHTML="";
 
-        const leftArrowDiv = document.createElement("div");
-        const rightArrowDiv = document.createElement("div");
-        // const weekSelectDiv = document.createElement("div");
+        const leftArrow = document.createElement("input");
+        leftArrow.type = "image";
+        leftArrow.id = "left-arrow";
+        leftArrow.alt = "Previous";
+        leftArrow.src = images.arrowLeft;
+        leftArrow.width = 60;
 
-        leftArrowDiv.innerHTML=`<input type="image" id="left-arrow" alt="Previous" src=${images.arrowLeft} width="60px"/>`;
-        rightArrowDiv.innerHTML=`<input type="image" id="right-arrow" alt="Next" src=${images.arrowRight} width="60px"/>`;
+        const rightArrow = document.createElement("input");
+        rightArrow.type = "image";
+        rightArrow.id = "right-arrow";
+        rightArrow.alt = "Next";
+        rightArrow.src = images.arrowRight;
+        rightArrow.width = 60;
+
         dropdown = createDropdown ();
 
-
-        if (week>1) {divs.navDiv.appendChild(leftArrowDiv)};
+        divs.navDiv.appendChild(leftArrow);
         divs.navDiv.appendChild(dropdown.select);
-        if (week<competitionData.numberOfWeeks) {divs.navDiv.appendChild(rightArrowDiv)};
+        divs.navDiv.appendChild(rightArrow);
+
+        update();
     }
 
-    return {displayArrows};
+    const update = function() {
+        document.getElementById("left-arrow").style.display = week > 1 ? "inline-block" : "none";
+        document.getElementById("right-arrow").style.display = week < competitionData.numberOfWeeks ? "inline-block" : "none";
+
+        const dropdown = document.getElementById("week-select");
+        dropdown.value = week.toString();
+    }
+
+    const init = function() {
+        displayArrows();
+    }
+
+    return {init, update};
 })();
 
 
@@ -59,20 +79,17 @@ const interface = (function () {
         divs.navDiv.addEventListener("click", function (e) {
             if (e.target.id === "left-arrow" && week > 1) {
                 week--;
-                display.displayArrows();
-                console.log(week);
+                display.update();
             } else if (e.target.id === "right-arrow" && week < competitionData.numberOfWeeks) {
                 week++;
-                display.displayArrows();
-                console.log(week);
+                display.update();
             }
         });
 
         divs.navDiv.addEventListener("change", function (e) {
             if (e.target.id === "week-select") {
                 week = parseInt(e.target.value);
-                display.displayArrows();
-                console.log(week);
+                display.update();
             }
         });
     }
@@ -80,5 +97,5 @@ const interface = (function () {
     return { arrowListeners };
 })();
 
-display.displayArrows();
+display.init();
 interface.arrowListeners();
