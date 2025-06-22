@@ -1,10 +1,36 @@
 body {
     font-family: Arial, Helvetica, sans-serif;
     text-align: center;
+    box-sizing: border-box;
 }
 
 #synopsis {
     font-style: italic;
+}
+
+#queens-div {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+}
+
+.queen-image {
+    width: 200px;
+    /* border-radius: 1rem; */
+}
+
+.queen-image.win, 
+.queen-image.top2 {
+    border: greenyellow 0.6rem solid;
+}
+
+.queen-image.bottom, 
+.queen-image.elim {
+    border: red 0.6rem solid;
+}
+
+.queen-image.out {
+    filter: grayscale(1);
 }
 
 #nav-div {
@@ -12,4 +38,5 @@ body {
     justify-content: center;
     align-items: center;
     gap: 1.5rem;
+    margin: 1rem 0;
 }
