@@ -31,17 +31,19 @@ const competitionMechanics = {
 }
 
 const queens = (function () {
-    queen0 = {
+    const queen0 = {
         queen: "Adore Delano",
         img: "images/AdoreDelanoAS2.webp",
         placement: ["Bottom", "Quit", "Out", "Out", "Out", "Out", "Out", "Out"],
+        initialPlacement: ["Bottom", "Quit", "Out", "Out", "Out", "Out", "Out", "Out"],
         return: Array(competitionData.numberOfWeeks, false)
     };
 
-    queen1 = {
+    const queen1 = {
         queen: "Alaska",
         img: "images/AlaskaAS2.webp",
         placement: ["High", "Win", "Safe", "Win", "Win", "Win", "Bottom", "Win"],
+        initialPlacement: ["High", "Win", "Safe", "Win", "Win", "Win", "Bottom", "Win"],
         return: Array(competitionData.numberOfWeeks, false)
     };
 
@@ -110,11 +112,12 @@ const display = (function () {
 
         // Add options from 1 to numberOfWeeks
         for (let i = 0; i <= competitionData.placements.length-1; i++) {
-            const option = document.createElement("option");
-            // option.value = ;
-            option.textContent = competitionData.placements[i];
-            option.value = competitionData.placements[i];
-            select.appendChild(option);
+            if ( competitionData.placements[i]!=="Out"){
+                const option = document.createElement("option");
+                option.textContent = competitionData.placements[i];
+                option.value = competitionData.placements[i];
+                select.appendChild(option);
+            }
         }
 
         // Append label and select to the container
@@ -183,7 +186,7 @@ const display = (function () {
         displayQueens();
     }
 
-    return {init, update};
+    return {init, update, updatePlacementDropdowns};
 })();
 
 
@@ -207,9 +210,39 @@ const interface = (function () {
         });
     }
 
-    return { arrowListeners };
+    const placementUpdate = function () {
+        for (let i = 0; i < queens.numberOfQueens; i++) {
+            const dropdown=document.getElementById(`queen-dropdown${i}`);
+
+            dropdown.addEventListener("change", function (e) {
+                queens.queens[i].placement[week - 1] = e.target.value;
+                // console.log(`Updated ${queens.queens[i].queen}'s placement for week ${week} to ${e.target.value}`);
+
+                if (e.target.value==="Eliminated" || e.target.value==="Quit") {
+                    for (let j = week; j < competitionData.numberOfWeeks; j++) {
+                        queens.queens[i].placement[j]="Out"; 
+                    }
+                } else {
+                    if (queens.queens[i].placement[week]==="Out") {
+                        // If elimination is reversed then set subsequent weeks to initial placement or Safe if queen was out by that stage
+                        for (let k = week; k < competitionData.numberOfWeeks; k++) {
+                            queens.queens[i].placement[k] = queens.queens[i].initialPlacement[k]==="Out" ? "Safe" :  queens.queens[i].initialPlacement[k];
+                        };
+                    }
+                }
+                display.updatePlacementDropdowns();
+            });
+        }
+    }
+
+    const eventListeners = function () {
+        arrowListeners();
+        placementUpdate();
+    }
+
+    return { eventListeners };
 })();
 
 display.init();
 display.update();
-interface.arrowListeners();
+interface.eventListeners();

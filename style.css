@@ -25,8 +25,12 @@ body {
 }
 
 .queen-image.bottom, 
-.queen-image.elim {
+.queen-image.eliminated {
     border: red 0.6rem solid;
+}
+
+.queen-image.quit {
+    border: black 0.6rem solid;
 }
 
 .queen-image.out {
