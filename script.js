@@ -15,6 +15,26 @@ const competitionData = {
     runways: [null, "Latex Eleganza", "The Future of Drag", "Two Looks in One", null, "Pants on the Runway", "Makeover Challenge", "Final Eleganza"]
 }
 
+const queens = (function () {
+    numberOfQueens = 10;
+
+    queen0 = {
+        queen: "Adore Delano",
+        img: "images/AdoreDelanoAS2.webp",
+        progress: ["Bottom", "Quit", "Out", "Out", "Out", "Out", "Out", "Out"],
+        return: [false, false, false, false, false, false, false, false]
+    };
+
+    queen1 = {
+        queen: "Alaska",
+        img: "images/AlaskaAS2.webp",
+        progress: ["High", "Win", "Safe", "Win", "Win", "Win", "Bottom", "Win"],
+        return: [false, false, false, false, false, false, false, false]
+    };
+
+    return {numberOfQueens, queen0, queen1};
+})();
+
 const images = {
     arrowLeft: "images/leftArrow.png",
     arrowRight: "images/rightArrow.png"
