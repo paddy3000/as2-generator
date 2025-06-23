@@ -105,6 +105,86 @@ const display = (function () {
         divs.nav.appendChild(rightArrow);
     }
 
+    const challengeHeaders = function() {
+        title  = competitionData.episodes[week-1];
+        lipSync = competitionData.lipSyncs[week-1];
+        synopsis = competitionData.synopses[week-1];
+        runway = competitionData.runways[week-1];
+
+        divs.episodeInfo.innerHTML = `
+            <h2 id="episode-title">${title}</h2>
+            <p id="synopsis">${synopsis}</p>
+            ${runway ? `<p id="runway-theme"><b>Runway theme:</b> ${runway}</p>` : ""}
+            <p id="lip-sync-song"><b>Lip-sync song:</b> ${lipSync}</p>`;
+    }
+
+    const displayQueens = function() {
+        const displayObjects = new Array(queens.numberOfQueens);
+        for (let i = 0; i < queens.numberOfQueens; i++) {
+            displayObjects[i]=document.createElement("div");
+            displayObjects[i].id=`queen${i}`;
+            displayObjects[i].innerHTML=`<div id="queen-image-box${i}"><img src=${queens.queens[i].img} class="queen-image" id="queen-image${i}"></div>
+                                         <h3 class="queen-name">${queens.queens[i].queen}</h3>`;
+
+            const dropdown = createPlacementDropdown();
+            dropdown.select.id=`queen-dropdown${i}`;
+            divs.queens.appendChild(displayObjects[i]);
+            const innerDiv = document.getElementById(`queen${i}`);
+            innerDiv.append(dropdown.select);
+        }
+    }
+
+    const createReturningButton = function () {
+        for (let i = 0; i < queens.numberOfQueens; i++) {
+            const queenDiv = document.getElementById(`queen${i}`);
+
+            const returningDiv = document.createElement("div");
+            returningDiv.id = `returning${i}`;
+            returningDiv.className = "returningRadio"
+
+            const labelReturning = document.createElement("p");
+            labelReturning.textContent = "Returning?";
+
+            const returningButtonYes = document.createElement("input");
+            returningButtonYes.type = "radio";
+            returningButtonYes.name = `returning_radio${i}`;
+            returningButtonYes.value = "Yes";
+            returningButtonYes.id = `returningYes${i}`;
+
+            const labelYes = document.createElement("label");
+            labelYes.htmlFor = `returningYes${i}`;
+            labelYes.textContent = "Yes";
+
+            const returningButtonNo = document.createElement("input");
+            returningButtonNo.type = "radio";
+            returningButtonNo.name = `returning_radio${i}`;
+            returningButtonNo.value = "No";
+            returningButtonYes.id = `returningNo${i}`;
+
+            const labelNo = document.createElement("label");
+            labelNo.htmlFor = `returningNo${i}`;
+            labelNo.textContent = "No";
+
+            returningDiv.append(labelReturning);
+            returningDiv.append(labelYes);
+            returningDiv.append(returningButtonYes);
+            returningDiv.append(labelNo);
+            returningDiv.append(returningButtonNo);
+
+            queenDiv.appendChild(returningDiv);
+        }
+    };
+
+    const updateReturningButton = function () {
+        for (let i = 0; i < queens.numberOfQueens; i++) {
+            const placementAtWeek = queens.queens[i].placement[week-1];
+            const placementAtPrevious = week>1 ? queens.queens[i].placement[week-2] : null;
+            const returningDiv = document.getElementById(`returning${i}`);
+
+            returningDiv.style.display = placementAtPrevious==="Out" || placementAtPrevious==="Quit" || placementAtPrevious==="Eliminated" ? "inline-block" : "none";
+        }
+    };
+
     const createPlacementDropdown = function() {
         // Create the select dropdown
         const select = document.createElement("select");
@@ -123,50 +203,26 @@ const display = (function () {
         // Append label and select to the container
         return {select}
     }
-    
-    const updatePlacementDropdowns = function() {
+
+
+
+    const updatePlacementDropdown = function() {
         for (let i = 0; i < queens.numberOfQueens; i++) {
             const queenDropdown = document.getElementById(`queen-dropdown${i}`);
             const queenImage = document.getElementById(`queen-image${i}`);
+            const queenImageBox = document.getElementById(`queen-image-box${i}`);
             const placementAtWeek = queens.queens[i].placement[week-1];
 
             queenDropdown.value = placementAtWeek;
             queenDropdown.style.display = placementAtWeek!=="Out" ? "inline-block" : "none";
 
             queenImage.className = "queen-image " + placementAtWeek.toLowerCase().replaceAll(" ", "");
+            queenImageBox.className = "queen-image-box " + placementAtWeek.toLowerCase().replaceAll(" ", "");
 
+            updateReturningButton();
             // if (placementAtWeek==="Out") {queenImage.className="queen-image out"}
             // else {queenImage.className="queen-image"};
         }
-    }
-
-    const displayQueens = function() {
-        const displayObjects = new Array(queens.numberOfQueens);
-        for (let i = 0; i < queens.numberOfQueens; i++) {
-            displayObjects[i]=document.createElement("div");
-            displayObjects[i].id=`queen${i}`;
-            displayObjects[i].innerHTML=`<img src=${queens.queens[i].img} class="queen-image" id="queen-image${i}">
-                                         <h3 class="queen-name">${queens.queens[i].queen}</h3>`;
-
-            const dropdown = createPlacementDropdown();
-            dropdown.select.id=`queen-dropdown${i}`;
-            divs.queens.appendChild(displayObjects[i]);
-            const innerDiv = document.getElementById(`queen${i}`);
-            innerDiv.append(dropdown.select);
-        }
-    }
-
-    const challengeHeaders = function() {
-        title  = competitionData.episodes[week-1];
-        lipSync = competitionData.lipSyncs[week-1];
-        synopsis = competitionData.synopses[week-1];
-        runway = competitionData.runways[week-1];
-
-        divs.episodeInfo.innerHTML = `
-            <h2 id="episode-title">${title}</h2>
-            <p id="synopsis">${synopsis}</p>
-            ${runway ? `<p id="runway-theme"><b>Runway theme:</b> ${runway}</p>` : ""}
-            <p id="lip-sync-song"><b>Lip-sync song:</b> ${lipSync}</p>`;
     }
 
     const update = function() {
@@ -178,15 +234,16 @@ const display = (function () {
 
         challengeHeaders();
 
-        updatePlacementDropdowns();
+        updatePlacementDropdown();
     }
 
     const init = function() {
         displayArrows();
         displayQueens();
+        createReturningButton();
     }
 
-    return {init, update, updatePlacementDropdowns};
+    return {init, update, updatePlacementDropdown};
 })();
 
 
@@ -216,7 +273,6 @@ const interface = (function () {
 
             dropdown.addEventListener("change", function (e) {
                 queens.queens[i].placement[week - 1] = e.target.value;
-                // console.log(`Updated ${queens.queens[i].queen}'s placement for week ${week} to ${e.target.value}`);
 
                 if (e.target.value==="Eliminated" || e.target.value==="Quit") {
                     for (let j = week; j < competitionData.numberOfWeeks; j++) {
@@ -230,7 +286,7 @@ const interface = (function () {
                         };
                     }
                 }
-                display.updatePlacementDropdowns();
+                display.updatePlacementDropdown();
             });
         }
     }

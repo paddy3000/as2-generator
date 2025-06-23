@@ -1,7 +1,15 @@
+:root {
+    --queen-border-size: 0.6rem;
+}
+
 body {
     font-family: Arial, Helvetica, sans-serif;
     text-align: center;
     box-sizing: border-box;
+}
+
+#episode-info {
+    height: 11rem;
 }
 
 #synopsis {
@@ -14,27 +22,44 @@ body {
     justify-content: center;
 }
 
-.queen-image {
+.queen-image-box {
     width: 200px;
+    height: 200px;
+    margin: var(--queen-border-size);
     /* border-radius: 1rem; */
 }
 
-.queen-image.win, 
-.queen-image.top2 {
-    border: greenyellow 0.6rem solid;
+.queen-image {
+    width: 200px;
+    /* height: 200px; */
 }
 
-.queen-image.bottom, 
+.queen-image-box.win, 
+.queen-image-box.top2 {
+    border: greenyellow solid var(--queen-border-size);
+    margin: 0;
+}
+
+.queen-image-box.bottom, 
+.queen-image-box.eliminated {
+    border: red solid var(--queen-border-size);
+    margin: 0;
+}
+
+.queen-image-box.quit {
+    border: darkred solid var(--queen-border-size);
+    margin: 0;
+}
+
+.queen-image.out,
+.queen-image.quit,
 .queen-image.eliminated {
-    border: red 0.6rem solid;
-}
-
-.queen-image.quit {
-    border: black 0.6rem solid;
-}
-
-.queen-image.out {
     filter: grayscale(1);
+}
+
+.returningRadio {
+    display: flex;
+    margin: 1rem 0 0 0;
 }
 
 #nav-div {
