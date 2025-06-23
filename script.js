@@ -36,7 +36,7 @@ const queens = (function () {
         img: "images/AdoreDelanoAS2.webp",
         placement: ["Bottom", "Quit", "Out", "Out", "Out", "Out", "Out", "Out"],
         initialPlacement: ["Bottom", "Quit", "Out", "Out", "Out", "Out", "Out", "Out"],
-        return: Array(competitionData.numberOfWeeks, false)
+        return: Array(competitionData.numberOfWeeks).fill(false)
     };
 
     const queen1 = {
@@ -44,7 +44,7 @@ const queens = (function () {
         img: "images/AlaskaAS2.webp",
         placement: ["High", "Win", "Safe", "Win", "Win", "Win", "Bottom", "Win"],
         initialPlacement: ["High", "Win", "Safe", "Win", "Win", "Win", "Bottom", "Win"],
-        return: Array(competitionData.numberOfWeeks, false)
+        return: Array(competitionData.numberOfWeeks).fill(false)
     };
 
     const queens = [queen0, queen1];
@@ -140,7 +140,13 @@ const display = (function () {
 
             const returningDiv = document.createElement("div");
             returningDiv.id = `returning${i}`;
-            returningDiv.className = "returningRadio"
+            returningDiv.className = "returningRadio";
+
+            const elementsYes = document.createElement("div");
+            elementsYes.className = "radio-elements";
+
+            const elementsNo = document.createElement("div");
+            elementsNo.className = "radio-elements";
 
             const labelReturning = document.createElement("p");
             labelReturning.textContent = "Returning?";
@@ -159,17 +165,20 @@ const display = (function () {
             returningButtonNo.type = "radio";
             returningButtonNo.name = `returning_radio${i}`;
             returningButtonNo.value = "No";
-            returningButtonYes.id = `returningNo${i}`;
+            returningButtonNo.id = `returningNo${i}`;
 
             const labelNo = document.createElement("label");
             labelNo.htmlFor = `returningNo${i}`;
             labelNo.textContent = "No";
 
+            elementsYes.append(labelYes);
+            elementsYes.append(returningButtonYes);
+            elementsNo.append(labelNo);
+            elementsNo.append(returningButtonNo);
+
             returningDiv.append(labelReturning);
-            returningDiv.append(labelYes);
-            returningDiv.append(returningButtonYes);
-            returningDiv.append(labelNo);
-            returningDiv.append(returningButtonNo);
+            returningDiv.append(elementsYes);
+            returningDiv.append(elementsNo);
 
             queenDiv.appendChild(returningDiv);
         }
@@ -179,9 +188,10 @@ const display = (function () {
         for (let i = 0; i < queens.numberOfQueens; i++) {
             const placementAtWeek = queens.queens[i].placement[week-1];
             const placementAtPrevious = week>1 ? queens.queens[i].placement[week-2] : null;
+            const returnAtPrevious= week>1 ? queens.queens[i].return[week-2] : null;
             const returningDiv = document.getElementById(`returning${i}`);
 
-            returningDiv.style.display = placementAtPrevious==="Out" || placementAtPrevious==="Quit" || placementAtPrevious==="Eliminated" ? "inline-block" : "none";
+            returningDiv.style.display = placementAtPrevious==="Out" || placementAtPrevious==="Quit" || placementAtPrevious==="Eliminated" ? "flex" : "none";
         }
     };
 
@@ -291,9 +301,38 @@ const interface = (function () {
         }
     }
 
+    const returningUpdate = function () {
+        const updatePlacements = function(queen, returning) {
+            // const placementAtWeek = queen.placement[week-1];
+            const placementAtNext = week<competitionData.numberOfWeeks ? queen.placement[week] : null;
+            const returningAtNext = week<competitionData.numberOfWeeks ? queen.return[week] : null;
+
+            if (returning==="Yes") {
+                queen.return[week-1]=true;
+                for (let j = week-1; j < competitionData.numberOfWeeks; j++) {
+                    queen.placement[j] = queen.initialPlacement[j]==="Out" ? "Safe" :  queen.initialPlacement[j];
+                    display.updatePlacementDropdown();
+                };
+            } else if (returning==="No" && placementAtNext !=="Out" && returningAtNext===false) {
+                for (let j = week; j < competitionData.numberOfWeeks; j++) {
+                    queen.placement[j] = queen.return[j]===false ? "Out" :  queen.initialPlacement[j];
+                };
+            }
+        }
+
+        for (let i = 0; i < queens.numberOfQueens; i++) {
+            const yesRadio = document.getElementById(`returningYes${i}`);
+            const noRadio = document.getElementById(`returningNo${i}`);
+            
+            if (yesRadio) {yesRadio.addEventListener("change", () => updatePlacements(queens.queens[i], "Yes"))};
+            if (noRadio) {noRadio.addEventListener("change", () => updatePlacements(queens.queens[i], "No"))};
+        }
+    }
+
     const eventListeners = function () {
         arrowListeners();
         placementUpdate();
+        returningUpdate();
     }
 
     return { eventListeners };

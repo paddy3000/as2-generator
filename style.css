@@ -59,7 +59,22 @@ body {
 
 .returningRadio {
     display: flex;
+    justify-content: center;
     margin: 1rem 0 0 0;
+}
+
+.radio-elements {
+    display: block;
+    margin: 0 1rem;
+}
+
+input[type=radio] {
+    display: block;
+}
+
+.radio-elements > label {
+    display: inline-block;
+    text-align: center;
 }
 
 #nav-div {
