@@ -34,22 +34,31 @@ const queens = (function () {
     const queen0 = {
         queen: "Adore Delano",
         img: "images/AdoreDelanoAS2.webp",
-        placement: ["Bottom", "Quit", "Out", "Out", "Out", "Out", "Out", "Out"],
         initialPlacement: ["Bottom", "Quit", "Out", "Out", "Out", "Out", "Out", "Out"],
         initialReturn: Array(competitionData.numberOfWeeks).fill(false),
-        return: Array(competitionData.numberOfWeeks).fill(false)
     };
 
     const queen1 = {
         queen: "Alaska",
         img: "images/AlaskaAS2.webp",
         initialPlacement: ["High", "Win", "Safe", "Win", "Win", "Win", "Bottom", "Win"],
-        placement: ["High", "Win", "Safe", "Win", "Win", "Win", "Bottom", "Win"],
-        initialReturn: Array(competitionData.numberOfWeeks).fill(false),
-        return: Array(competitionData.numberOfWeeks).fill(false)
+        initialReturn: Array(competitionData.numberOfWeeks).fill(false)
     };
 
-    const queens = [queen0, queen1];
+    const queen2 = {
+        queen: "Alyssa Edwards",
+        img: "images/AlyssaEdwardsAS2.webp",
+        initialPlacement: ["Safe", "Safe", "Win", "Eliminated", "Win", "High", "Eliminated", "Out"],
+        initialReturn: [false, false, false, false, true, false, false, false]
+    };
+
+    const queens = [queen0, queen1, queen2];
+
+    queens.forEach((queen) => {
+        queen.placement=queen.initialPlacement;
+        queen.return=queen.initialReturn;
+    })
+
     const numberOfQueens = queens.length;
     return {queens, numberOfQueens};
 })();
@@ -295,7 +304,9 @@ const interface = (function () {
 
                 if (e.target.value==="Eliminated" || e.target.value==="Quit") {
                     for (let j = week; j < competitionData.numberOfWeeks; j++) {
-                        queens.queens[i].placement[j]="Out"; 
+                        let queenReturns=false;
+                        if (queens.queens[i].return[j]===true) {queenReturns=true};
+                        if (!queenReturns) {queens.queens[i].placement[j]="Out"}; 
                     }
                 } else {
                     if (queens.queens[i].placement[week]==="Out") {
