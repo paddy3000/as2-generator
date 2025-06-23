@@ -33,21 +33,18 @@ const competitionMechanics = {
 const queens = (function () {
     const queen0 = {
         queen: "Adore Delano",
-        img: "images/AdoreDelanoAS2.webp",
         initialPlacement: ["Bottom", "Quit", "Out", "Out", "Out", "Out", "Out", "Out"],
         initialReturn: Array(competitionData.numberOfWeeks).fill(false),
     };
 
     const queen1 = {
         queen: "Alaska",
-        img: "images/AlaskaAS2.webp",
         initialPlacement: ["High", "Win", "Safe", "Win", "Win", "Win", "Bottom", "Win"],
         initialReturn: Array(competitionData.numberOfWeeks).fill(false)
     };
 
     const queen2 = {
         queen: "Alyssa Edwards",
-        img: "images/AlyssaEdwardsAS2.webp",
         initialPlacement: ["Safe", "Safe", "Win", "Eliminated", "Win", "High", "Eliminated", "Out"],
         initialReturn: [false, false, false, false, true, false, false, false]
     };
@@ -55,8 +52,9 @@ const queens = (function () {
     const queens = [queen0, queen1, queen2];
 
     queens.forEach((queen) => {
-        queen.placement=queen.initialPlacement;
-        queen.return=queen.initialReturn;
+        queen.placement=queen.initialPlacement.slice();
+        queen.return=queen.initialReturn.slice();
+        queen.img=`images/${queen.queen.replaceAll(" ", "")}AS2.webp`
     })
 
     const numberOfQueens = queens.length;
@@ -300,6 +298,7 @@ const interface = (function () {
             const dropdown=document.getElementById(`queen-dropdown${i}`);
 
             dropdown.addEventListener("change", function (e) {
+                const unchangedPlacement=queens.queens[i].placement[week - 1];
                 queens.queens[i].placement[week - 1] = e.target.value;
 
                 if (e.target.value==="Eliminated" || e.target.value==="Quit") {
@@ -311,8 +310,15 @@ const interface = (function () {
                 } else {
                     if (queens.queens[i].placement[week]==="Out") {
                         // If elimination is reversed then set subsequent weeks to initial placement or Safe if queen was out by that stage
-                        for (let k = week; k < competitionData.numberOfWeeks; k++) {
-                            queens.queens[i].placement[k] = queens.queens[i].initialPlacement[k]==="Out" ? "Safe" :  queens.queens[i].initialPlacement[k];
+                        for (let j = week; j < competitionData.numberOfWeeks; j++) {
+                            queens.queens[i].placement[j] = queens.queens[i].initialPlacement[j]==="Out" ? "Safe" :  queens.queens[i].initialPlacement[j];
+                        };
+                    }
+                    if ((unchangedPlacement==="Eliminated" || unchangedPlacement==="Quit") && (e.target.value!=="Eliminated" && e.target.value!=="Quit")){
+                        for (let j = week; j < competitionData.numberOfWeeks; j++) {
+                            queens.queens[i].placement[j] = queens.queens[i].initialPlacement[j];
+                            console.log(queens.queens[i]);
+                            queens.queens[i].return[j] = queens.queens[i].initialReturn[j];
                         };
                     }
                 }
