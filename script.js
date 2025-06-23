@@ -36,14 +36,16 @@ const queens = (function () {
         img: "images/AdoreDelanoAS2.webp",
         placement: ["Bottom", "Quit", "Out", "Out", "Out", "Out", "Out", "Out"],
         initialPlacement: ["Bottom", "Quit", "Out", "Out", "Out", "Out", "Out", "Out"],
+        initialReturn: Array(competitionData.numberOfWeeks).fill(false),
         return: Array(competitionData.numberOfWeeks).fill(false)
     };
 
     const queen1 = {
         queen: "Alaska",
         img: "images/AlaskaAS2.webp",
-        placement: ["High", "Win", "Safe", "Win", "Win", "Win", "Bottom", "Win"],
         initialPlacement: ["High", "Win", "Safe", "Win", "Win", "Win", "Bottom", "Win"],
+        placement: ["High", "Win", "Safe", "Win", "Win", "Win", "Bottom", "Win"],
+        initialReturn: Array(competitionData.numberOfWeeks).fill(false),
         return: Array(competitionData.numberOfWeeks).fill(false)
     };
 
@@ -191,6 +193,13 @@ const display = (function () {
             const returnAtPrevious= week>1 ? queens.queens[i].return[week-2] : null;
             const returningDiv = document.getElementById(`returning${i}`);
 
+
+            const yesRadio = document.getElementById(`returningYes${i}`);
+            const noRadio = document.getElementById(`returningNo${i}`);
+
+            yesRadio.checked = queens.queens[i].return[week-1];
+            noRadio.checked = !queens.queens[i].return[week-1];
+
             returningDiv.style.display = placementAtPrevious==="Out" || placementAtPrevious==="Quit" || placementAtPrevious==="Eliminated" ? "flex" : "none";
         }
     };
@@ -307,17 +316,19 @@ const interface = (function () {
             const placementAtNext = week<competitionData.numberOfWeeks ? queen.placement[week] : null;
             const returningAtNext = week<competitionData.numberOfWeeks ? queen.return[week] : null;
 
+            
             if (returning==="Yes") {
-                queen.return[week-1]=true;
                 for (let j = week-1; j < competitionData.numberOfWeeks; j++) {
+                    queen.return[j] = j===week-1 ? true : queen.initialReturn[j];
                     queen.placement[j] = queen.initialPlacement[j]==="Out" ? "Safe" :  queen.initialPlacement[j];
-                    display.updatePlacementDropdown();
                 };
-            } else if (returning==="No" && placementAtNext !=="Out" && returningAtNext===false) {
-                for (let j = week; j < competitionData.numberOfWeeks; j++) {
+            } else if (returning==="No") {
+                for (let j = week-1; j < competitionData.numberOfWeeks; j++) {
+                    queen.return[j] = j===week-1 ? false : queen.initialReturn[j];
                     queen.placement[j] = queen.return[j]===false ? "Out" :  queen.initialPlacement[j];
                 };
             }
+            display.updatePlacementDropdown();
         }
 
         for (let i = 0; i < queens.numberOfQueens; i++) {
