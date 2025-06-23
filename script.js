@@ -39,7 +39,7 @@ const queens = (function () {
 
     const queen1 = {
         queen: "Alaska",
-        initialPlacement: ["High", "Win", "Safe", "Win", "Win", "Win", "Bottom", "Win"],
+        initialPlacement: ["High", "Win", "Safe", "Win", "Top 2", "Win", "Bottom", "Win"],
         initialReturn: Array(competitionData.numberOfWeeks).fill(false)
     };
 
@@ -49,12 +49,54 @@ const queens = (function () {
         initialReturn: [false, false, false, false, true, false, false, false]
     };
 
-    const queens = [queen0, queen1, queen2];
+    const queen3 = {
+        queen: "Coco Montrese",
+        initialPlacement: ["Eliminated", "Out", "Out", "Out", "Out", "Out", "Out", "Out"],
+        initialReturn: Array(competitionData.numberOfWeeks).fill(false),
+    };
+    
+    const queen4 = {
+        queen: "Detox",
+        initialPlacement: ["Safe", "Bottom", "Top 2", "Safe", "Top 2", "Safe", "Win", "High"],
+        initialReturn: Array(competitionData.numberOfWeeks).fill(false),
+    };
+    
+    const queen5 = {
+        queen: "Ginger Minj",
+        initialPlacement: ["High", "Safe", "Eliminated", "Out", "Out", "Out", "Out", "Out"],
+        initialReturn: Array(competitionData.numberOfWeeks).fill(false),
+    };
+    
+    const queen6 = {
+        queen: "Katya",
+        initialPlacement: ["Safe", "Top 2", "Bottom", "Bottom", "Safe", "Top 2", "Top 2", "High"],
+        initialReturn: Array(competitionData.numberOfWeeks).fill(false),
+    };
+    
+    const queen7 = {
+        queen: "Phi Phi O'Hara",
+        initialPlacement: ["Bottom", "High", "Safe", "Top 2", "Eliminated", "Out", "Out", "Out"],
+        initialReturn: Array(competitionData.numberOfWeeks).fill(false),
+    };
+    
+    const queen8 = { 
+        queen: "Roxxxy Andrews",
+        initialPlacement: ["Win", "Bottom", "Safe", "Bottom", "Bottom", "Bottom", "Bottom", "Eliminated"],
+        initialReturn: Array(competitionData.numberOfWeeks).fill(false),
+    };
+    
+    const queen9 = {
+        queen: "Tatianna",
+        initialPlacement: ["Top 2", "Eliminated", "Out", "Out", "Win", "Eliminated", "Out", "Out"],
+        initialReturn: [false, false, false, false, true, false, false, false],
+    };
+
+    const queens = [queen0, queen1, queen2, queen3, queen4, queen5, queen6, queen7, queen8, queen9];
 
     queens.forEach((queen) => {
         queen.placement=queen.initialPlacement.slice();
         queen.return=queen.initialReturn.slice();
-        queen.img=`images/${queen.queen.replaceAll(" ", "")}AS2.webp`
+        queen.img=`images/${queen.queen.replaceAll(" ", "").replaceAll("'","")}AS2.webp`
     })
 
     const numberOfQueens = queens.length;
@@ -310,14 +352,16 @@ const interface = (function () {
                 } else {
                     if (queens.queens[i].placement[week]==="Out") {
                         // If elimination is reversed then set subsequent weeks to initial placement or Safe if queen was out by that stage
+                        // Not sure if this code is needed?
                         for (let j = week; j < competitionData.numberOfWeeks; j++) {
                             queens.queens[i].placement[j] = queens.queens[i].initialPlacement[j]==="Out" ? "Safe" :  queens.queens[i].initialPlacement[j];
                         };
                     }
                     if ((unchangedPlacement==="Eliminated" || unchangedPlacement==="Quit") && (e.target.value!=="Eliminated" && e.target.value!=="Quit")){
+                        console.log("click");
                         for (let j = week; j < competitionData.numberOfWeeks; j++) {
-                            queens.queens[i].placement[j] = queens.queens[i].initialPlacement[j];
-                            console.log(queens.queens[i]);
+                            if (queens.queens[i].initialPlacement[j]==="Quit" || queens.queens[i].initialPlacement[j]==="Quit") {continue};
+                            queens.queens[i].placement[j] = queens.queens[i].initialPlacement[j]==="Out" ? "Safe" :  queens.queens[i].initialPlacement[j];
                             queens.queens[i].return[j] = queens.queens[i].initialReturn[j];
                         };
                     }

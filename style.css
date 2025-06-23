@@ -18,8 +18,11 @@ body {
 
 #queens-div {
     display: flex;
+    flex-wrap: wrap;
     gap: 2rem;
     justify-content: center;
+    width: min(100vw, 1300px);
+    justify-self: center;
 }
 
 .queen-image-box {
