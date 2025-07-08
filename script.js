@@ -334,42 +334,105 @@ const interface = (function () {
             }
         });
     }
-
     const placementUpdate = function () {
         for (let i = 0; i < queens.numberOfQueens; i++) {
             const dropdown=document.getElementById(`queen-dropdown${i}`);
+            
+            let eliminated = false;
 
-            dropdown.addEventListener("change", function (e) {
-                const unchangedPlacement=queens.queens[i].placement[week - 1];
-                queens.queens[i].placement[week - 1] = e.target.value;
+            dropdown.addEventListener("change", function(e) {
+                const dropdownValue = e.target.value;
 
-                if (e.target.value==="Eliminated" || e.target.value==="Quit") {
-                    for (let j = week; j < competitionData.numberOfWeeks; j++) {
-                        let queenReturns=false;
-                        if (queens.queens[i].return[j]===true) {queenReturns=true};
-                        if (!queenReturns) {queens.queens[i].placement[j]="Out"}; 
-                    }
-                } else {
-                    if (queens.queens[i].placement[week]==="Out") {
-                        // If elimination is reversed then set subsequent weeks to initial placement or Safe if queen was out by that stage
-                        // Not sure if this code is needed?
-                        for (let j = week; j < competitionData.numberOfWeeks; j++) {
-                            queens.queens[i].placement[j] = queens.queens[i].initialPlacement[j]==="Out" ? "Safe" :  queens.queens[i].initialPlacement[j];
+                // Initialise eliminated as false, will be updated for each week
+                let eliminated = false;
+
+                // Dropdown is set to Eliminated or Quit in the current week then set eliminated to true
+                if (dropdownValue==="Eliminated" || dropdownValue==="Quit") {eliminated = true};
+
+                // Cycle through the subsequent weeks
+                for (let j = week; j < competitionData.numberOfWeeks; j++) {
+                    // Get initial values of placement and return for this week and value from dropdown
+                    const initialPlacement = queens.queens[i].initialPlacement[j];
+                    const initialReturns = queens.queens[i].initialReturn[j];
+                    queens.queens[i].placement[week - 1] = dropdownValue;
+
+                    // If queen returns then set value of eliminated back to false
+                    if (queens.queens[i].return[j]===true && queens.queens[i].placement[j]!=="Eliminated" && queens.queens[i].placement[j] !=="Quit") {eliminated = false};
+
+                    console.log(`Week ${i} start of logic placement=${queens.queens[i].placement[j]} eliminated=${eliminated}`);
+                    // Logic for if queen is eliminated
+                    if (eliminated===true) {
+                        // Set all weeks where queen is eliminated to Out
+                        if ((queens.queens[i].return[j]===false) || (queens.queens[i].placement[j]!=="Eliminated" && queens.queens[i].placement[j] !=="Quit")) {
+                            queens.queens[i].placement[j]="Out"
                         };
-                    }
-                    if ((unchangedPlacement==="Eliminated" || unchangedPlacement==="Quit") && (e.target.value!=="Eliminated" && e.target.value!=="Quit")){
-                        console.log("click");
-                        for (let j = week; j < competitionData.numberOfWeeks; j++) {
-                            if (queens.queens[i].initialPlacement[j]==="Quit" || queens.queens[i].initialPlacement[j]==="Quit") {continue};
-                            queens.queens[i].placement[j] = queens.queens[i].initialPlacement[j]==="Out" ? "Safe" :  queens.queens[i].initialPlacement[j];
-                            queens.queens[i].return[j] = queens.queens[i].initialReturn[j];
+
+                        // If queen returns in original competition results (like Tatianna) then set returns to true
+                        // if (queens.queens[i].return[j]===false && initialReturns===true) {queens.queens[i].return[j]=true};
+                        queens.queens[i].return[j]=initialReturns;
+                    } 
+                    if (eliminated===false) {
+                        // If queen is not eliminated and was not eliminated by this stage in the original competition results then set to original results
+                        if (queens.queens[i].placement[j]==="Out" && initialPlacement!=="Out") {
+                            queens.queens[i].placement[j]=initialPlacement;
                         };
-                    }
+                        // If queen was eliminated by this point then set to Safe
+                        if (queens.queens[i].placement[j]==="Out" && initialPlacement==="Out") {
+                            queens.queens[i].placement[j]="Safe";
+                        };
+
+                        // Set returns to false (since no longer in competition);
+                        //  NEED TO INVESTIGATE THIS AND WHY IT IS NEEDED - THINK IT SHOULD GO ELSEWHERE
+                        queens.queens[i].return[j]=initialReturns;
+                    } 
+
+                    if (queens.queens[i].placement[j]==="Eliminated" || queens.queens[i].placement[j]==="Quit") {eliminated = true};
+                    // console.log(`Week ${i} start of logic placement=${queens.queens[i].placement[j]} eliminated=${eliminated}`);
                 }
                 display.updatePlacementDropdown();
+                console.log(queens.queens[i].placement);
+                console.log(queens.queens[i].return);
             });
         }
-    }
+    };
+    // const placementUpdate = function () {
+    //     for (let i = 0; i < queens.numberOfQueens; i++) {
+    //         const dropdown=document.getElementById(`queen-dropdown${i}`);
+    //         var queenInitElim = false;
+
+    //         dropdown.addEventListener("change", function (e) {
+    //             const unchangedPlacement=queens.queens[i].placement[week - 1];
+    //             queens.queens[i].placement[week - 1] = e.target.value;
+
+    //             if (queens.queen[i].initialReturn===true) {queenInitElim=false};
+    //             if (queens.queen[i].initialPlacement==="Eliminated" || queens.queen[i].initialPlacement==="Quit") {queenInitElim=true};
+
+    //             if (e.target.value==="Eliminated" || e.target.value==="Quit") {
+    //                 for (let j = week; j < competitionData.numberOfWeeks; j++) {
+    //                     // If queen is eliminated or quits then set all subsequent weeks to Out unless queen returns
+    //                     let queenReturns=false;
+    //                     if (queens.queens[i].return[j]===true) {queenReturns=true};
+    //                     if (!queenReturns) {queens.queens[i].placement[j]="Out"}; 
+    //                 }
+    //             } else {
+    //                 if (queens.queens[i].placement[week]==="Out") {
+    //                     // If elimination is reversed then set subsequent weeks to initial placement or Safe if queen was out by that stage
+    //                     // Not sure if this code is needed?
+    //                     for (let j = week; j < competitionData.numberOfWeeks; j++) {
+    //                         queens.queens[i].placement[j] = queens.queens[i].initialPlacement[j]==="Out" ? "Safe" :  queens.queens[i].initialPlacement[j];
+    //                     };
+    //                 }
+    //                 if ((unchangedPlacement==="Eliminated" || unchangedPlacement==="Quit") && (e.target.value!=="Eliminated" && e.target.value!=="Quit")){
+    //                     for (let j = week; j < competitionData.numberOfWeeks; j++) {
+    //                         queens.queens[i].placement[j] = queens.queens[i].initialPlacement[j]==="Out" ? "Safe" :  queens.queens[i].initialPlacement[j];
+    //                         queens.queens[i].return[j] = queens.queens[i].initialReturn[j];
+    //                     };
+    //                 }
+    //             }
+    //             display.updatePlacementDropdown();
+    //         });
+    //     }
+    // }
 
     const returningUpdate = function () {
         const updatePlacements = function(queen, returning) {
