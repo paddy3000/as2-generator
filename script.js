@@ -111,7 +111,8 @@ const images = {
 const divs = {
     queens: document.getElementById("queens-div"),
     nav: document.getElementById("nav-div"),
-    episodeInfo: document.getElementById("episode-info")
+    episodeInfo: document.getElementById("episode-info"),
+    progressTable: document.getElementById("progress-table")
 }
 
 const display = (function () {
@@ -346,8 +347,11 @@ const interface = (function () {
                 // Initialise eliminated as false, will be updated for each week
                 let eliminated = false;
 
+                const isEliminated = function(val) {
+                    return val==="Eliminated" || val==="Quit"
+                }
                 // Dropdown is set to Eliminated or Quit in the current week then set eliminated to true
-                if (dropdownValue==="Eliminated" || dropdownValue==="Quit") {eliminated = true};
+                eliminated = isEliminated(dropdownValue);
 
                 // Cycle through the subsequent weeks
                 for (let j = week; j < competitionData.numberOfWeeks; j++) {
@@ -357,19 +361,18 @@ const interface = (function () {
                     queens.queens[i].placement[week - 1] = dropdownValue;
 
                     // If queen returns then set value of eliminated back to false
-                    if (queens.queens[i].return[j]===true && queens.queens[i].placement[j]!=="Eliminated" && queens.queens[i].placement[j] !=="Quit") {eliminated = false};
+                    if (queens.queens[i].return[j]===true && !isEliminated(queens.queens[i].placement[j])) {eliminated = false};
 
-                    console.log(`Week ${i} start of logic placement=${queens.queens[i].placement[j]} eliminated=${eliminated}`);
                     // Logic for if queen is eliminated
-                    if (eliminated===true) {
+                    if (eliminated===true && queens.queens[i].placement[j]!=="Out") {
                         // Set all weeks where queen is eliminated to Out
-                        if ((queens.queens[i].return[j]===false) || (queens.queens[i].placement[j]!=="Eliminated" && queens.queens[i].placement[j] !=="Quit")) {
+                        if ((queens.queens[i].return[j]===false) || !isEliminated(queens.queens[i].placement[j])) {
                             queens.queens[i].placement[j]="Out"
                         };
 
                         // If queen returns in original competition results (like Tatianna) then set returns to true
                         // if (queens.queens[i].return[j]===false && initialReturns===true) {queens.queens[i].return[j]=true};
-                        queens.queens[i].return[j]=initialReturns;
+                        // queens.queens[i].return[j]=initialReturns;
                     } 
                     if (eliminated===false) {
                         // If queen is not eliminated and was not eliminated by this stage in the original competition results then set to original results
@@ -381,58 +384,16 @@ const interface = (function () {
                             queens.queens[i].placement[j]="Safe";
                         };
 
-                        // Set returns to false (since no longer in competition);
-                        //  NEED TO INVESTIGATE THIS AND WHY IT IS NEEDED - THINK IT SHOULD GO ELSEWHERE
-                        queens.queens[i].return[j]=initialReturns;
+                        // Set returns back to false since in the competition
+                        queens.queens[i].return[j]=false;
                     } 
 
-                    if (queens.queens[i].placement[j]==="Eliminated" || queens.queens[i].placement[j]==="Quit") {eliminated = true};
-                    // console.log(`Week ${i} start of logic placement=${queens.queens[i].placement[j]} eliminated=${eliminated}`);
+                if (isEliminated(queens.queens[i].placement[j])) {eliminated=true};
                 }
                 display.updatePlacementDropdown();
-                console.log(queens.queens[i].placement);
-                console.log(queens.queens[i].return);
             });
         }
     };
-    // const placementUpdate = function () {
-    //     for (let i = 0; i < queens.numberOfQueens; i++) {
-    //         const dropdown=document.getElementById(`queen-dropdown${i}`);
-    //         var queenInitElim = false;
-
-    //         dropdown.addEventListener("change", function (e) {
-    //             const unchangedPlacement=queens.queens[i].placement[week - 1];
-    //             queens.queens[i].placement[week - 1] = e.target.value;
-
-    //             if (queens.queen[i].initialReturn===true) {queenInitElim=false};
-    //             if (queens.queen[i].initialPlacement==="Eliminated" || queens.queen[i].initialPlacement==="Quit") {queenInitElim=true};
-
-    //             if (e.target.value==="Eliminated" || e.target.value==="Quit") {
-    //                 for (let j = week; j < competitionData.numberOfWeeks; j++) {
-    //                     // If queen is eliminated or quits then set all subsequent weeks to Out unless queen returns
-    //                     let queenReturns=false;
-    //                     if (queens.queens[i].return[j]===true) {queenReturns=true};
-    //                     if (!queenReturns) {queens.queens[i].placement[j]="Out"}; 
-    //                 }
-    //             } else {
-    //                 if (queens.queens[i].placement[week]==="Out") {
-    //                     // If elimination is reversed then set subsequent weeks to initial placement or Safe if queen was out by that stage
-    //                     // Not sure if this code is needed?
-    //                     for (let j = week; j < competitionData.numberOfWeeks; j++) {
-    //                         queens.queens[i].placement[j] = queens.queens[i].initialPlacement[j]==="Out" ? "Safe" :  queens.queens[i].initialPlacement[j];
-    //                     };
-    //                 }
-    //                 if ((unchangedPlacement==="Eliminated" || unchangedPlacement==="Quit") && (e.target.value!=="Eliminated" && e.target.value!=="Quit")){
-    //                     for (let j = week; j < competitionData.numberOfWeeks; j++) {
-    //                         queens.queens[i].placement[j] = queens.queens[i].initialPlacement[j]==="Out" ? "Safe" :  queens.queens[i].initialPlacement[j];
-    //                         queens.queens[i].return[j] = queens.queens[i].initialReturn[j];
-    //                     };
-    //                 }
-    //             }
-    //             display.updatePlacementDropdown();
-    //         });
-    //     }
-    // }
 
     const returningUpdate = function () {
         const updatePlacements = function(queen, returning) {
@@ -473,6 +434,105 @@ const interface = (function () {
     return { eventListeners };
 })();
 
+const displayProgress = (function () {
+    const formatResult = function(result) {
+        if (result==="Bottom") {return "BTM"}
+        else if (result==="Eliminated") {return "ELIM"}
+        else if (result==="Out") {return ""}
+        else {return result.toUpperCase()}
+    };
+
+    const eliminationOrder = function () {
+        resultPoints = function(result) {
+            if (result==="Eliminated") {return 0}
+            else if (result==="Quit") {return 0}
+            else if (result==="Bottom 2") {return 1}
+            else if (result==="Low") {return 2}
+            else if (result==="Safe") {return 3}
+            else if (result==="High") {return 4}
+            else if (result==="Top 2") {return 5}
+            else if (result==="Win") {return 6}
+
+        }
+
+        weeksInCompetition = new Array(queens.numberOfQueens);
+        for (let i=0; i < queens.numberOfQueens; i++) {
+            var lastWeekIn=1;
+            var lastPoints=0;
+            for (let j=0; j < competitionData.numberOfWeeks; j++){
+                if (queens.queens[i].placement[j]!=="Out") {
+                    lastWeekIn=j+1;
+                    lastPoints=resultPoints(queens.queens[i].placement[j]);
+                };
+            }
+            weeksInCompetition[i]={index: i, 
+                                   weeks: lastWeekIn,
+                                   lastPoints: lastPoints
+                                };
+
+        }
+        weeksInCompetition.sort((a,b) => b.lastPoints - a.lastPoints);
+        weeksInCompetition.sort((a,b) => b.weeks - a.weeks);
+        return weeksInCompetition;        
+    }
+
+    const createTable = function () {
+        // ;
+
+        const tbl = document.createElement("table");
+        const tblBody = document.createElement("tbody");
+
+        const tblHeader=document.createElement("thead");
+        const queensHeader=document.createElement("th");
+        queensHeader.textContent="Queen";
+        queensHeader.className="queen-name"
+
+        tblHeader.appendChild(queensHeader);
+
+        for (let i=0; i < competitionData.numberOfWeeks; i++) {
+            const headCell = document.createElement("th");
+            headCell.textContent=`${i+1}`;
+            tblHeader.appendChild(headCell);
+        }
+
+        const sortedQueens = eliminationOrder();
+
+        for (let k = 0; k < queens.numberOfQueens; k++) {
+            const i = sortedQueens[k].index;
+
+            const row = document.createElement("tr");
+            const queenNameCell = document.createElement("th");
+            const queenName = document.createTextNode(queens.queens[i].queen);
+      
+            queenNameCell.appendChild(queenName);
+            queenNameCell.className="queen-name"
+            row.appendChild(queenNameCell);
+
+            for (j = 0; j < competitionData.numberOfWeeks; j++) {
+                const formattedResult=formatResult(queens.queens[i].placement[j]);
+                const weekCell = document.createElement("td");
+                const weekResult = document.createTextNode(formattedResult);
+                weekCell.className="result " + formattedResult.replaceAll(" ", "");
+                weekCell.appendChild(weekResult);
+                row.appendChild(weekCell);
+            }   
+
+            row.className="queen-row";
+            tblBody.appendChild(row);        
+        }
+
+        
+        // append the <tbody> inside the <table>
+        tbl.appendChild(tblHeader);
+        tbl.appendChild(tblBody);
+        // put <table> in the <body>
+        divs.progressTable.appendChild(tbl);
+    };
+
+    return {createTable};
+})();
+
 display.init();
 display.update();
 interface.eventListeners();
+displayProgress.createTable();

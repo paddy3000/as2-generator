@@ -87,3 +87,12 @@ input[type=radio] {
     gap: 1.5rem;
     margin: 1rem 0;
 }
+
+/* Results table CSS */
+th.queen-name {
+    text-align: left;
+}
+
+td.WIN {
+    background-color: green;
+}
