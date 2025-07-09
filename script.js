@@ -111,6 +111,7 @@ const images = {
 const divs = {
     queens: document.getElementById("queens-div"),
     nav: document.getElementById("nav-div"),
+    navResults: document.getElementById("nav-results"),
     episodeInfo: document.getElementById("episode-info"),
     progressTable: document.getElementById("progress-table")
 }
@@ -155,6 +156,13 @@ const display = (function () {
         divs.nav.appendChild(leftArrow);
         divs.nav.appendChild(dropdown.select);
         divs.nav.appendChild(rightArrow);
+    }
+
+    const displayResultsButton = function() {
+        const resultsButton = document.createElement("button");
+        resultsButton.textContent="See Results";
+        resultsButton.id="see-results";
+        divs.navResults.appendChild(resultsButton);
     }
 
     const challengeHeaders = function() {
@@ -307,9 +315,10 @@ const display = (function () {
     }
 
     const init = function() {
-        displayArrows();
         displayQueens();
         createReturningButton();
+        displayArrows();
+        displayResultsButton();
     }
 
     return {init, update, updatePlacementDropdown};
@@ -425,10 +434,17 @@ const interface = (function () {
         }
     }
 
+    const updateResultsTable = function () {
+        const resultsButton = document.getElementById("see-results");
+
+        resultsButton.addEventListener("click", displayProgress.createTable)
+    } 
+
     const eventListeners = function () {
         arrowListeners();
         placementUpdate();
         returningUpdate();
+        updateResultsTable();
     }
 
     return { eventListeners };
@@ -477,8 +493,6 @@ const displayProgress = (function () {
     }
 
     const createTable = function () {
-        // ;
-
         const tbl = document.createElement("table");
         const tblBody = document.createElement("tbody");
 
@@ -526,6 +540,7 @@ const displayProgress = (function () {
         tbl.appendChild(tblHeader);
         tbl.appendChild(tblBody);
         // put <table> in the <body>
+        divs.progressTable.innerHTML="";
         divs.progressTable.appendChild(tbl);
     };
 
@@ -534,5 +549,5 @@ const displayProgress = (function () {
 
 display.init();
 display.update();
-interface.eventListeners();
 displayProgress.createTable();
+interface.eventListeners();
