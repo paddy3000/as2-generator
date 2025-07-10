@@ -1,5 +1,14 @@
 :root {
     --queen-border-size: 0.6rem;
+    
+    /* Colours for different placements */
+    --win-color: rgb(150, 235, 24);
+    --top2-color: rgb(204, 255, 128);
+    --high-color: rgb(231, 252, 200);
+    --low-color: rgb(255, 173, 173);
+    --bottom-color: rgb(255, 119, 119);
+    --elim-color: red;
+    --quit-color: darkred;
 }
 
 body {
@@ -39,18 +48,18 @@ body {
 
 .queen-image-box.win, 
 .queen-image-box.top2 {
-    border: greenyellow solid var(--queen-border-size);
+    border: var(--win-color) solid var(--queen-border-size);
     margin: 0;
 }
 
 .queen-image-box.bottom, 
 .queen-image-box.eliminated {
-    border: red solid var(--queen-border-size);
+    border: var(--elim-color) solid var(--queen-border-size);
     margin: 0;
 }
 
 .queen-image-box.quit {
-    border: darkred solid var(--queen-border-size);
+    border: var(--quit-color) solid var(--queen-border-size);
     margin: 0;
 }
 
@@ -85,14 +94,64 @@ input[type=radio] {
     justify-content: center;
     align-items: center;
     gap: 1.5rem;
-    margin: 1rem 0;
+    margin: 2rem 0 1.5rem 0;
+}
+
+#nav-results {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    margin: 1rem;
 }
 
 /* Results table CSS */
-th.queen-name {
-    text-align: left;
+#results-table-div {
+    display: flex;
+    justify-content: center;
 }
 
-td.WIN {
-    background-color: green;
+#results-table {
+    font-size: 1.5rem;
+}
+
+td {
+    width: 5rem;
+}
+
+th.queen-name {
+    text-align: left;
+    padding-right: 1.5rem;
+}
+
+.episode-type {
+    font-size: 0.9rem;
+}
+
+#results-table td.result.win {
+    background-color: var(--win-color);
+}
+
+#results-table td.result.top2 {
+    background-color: var(--top2-color);
+}
+
+#results-table td.result.high {
+    background-color: var(--high-color);
+}
+
+#results-table td.result.low {
+    background-color: var(--low-color);
+}
+
+#results-table td.result.btm {
+    background-color: var(--bottom-color);
+}
+
+#results-table td.result.elim {
+    background-color: var(--elim-color);
+}
+
+#results-table td.result.quit {
+    background-color: var(--quit-color);
 }

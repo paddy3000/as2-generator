@@ -3,6 +3,7 @@ var week=1;
 const competitionData = {
     numberOfWeeks: 8,
     episodes: ["All Star Talent Show Extravaganza", "All Stars Snatch Game", "HERstory of the World", "Drag Movie Shequels", "Revenge Of The Queens", "Drag Fish Tank", "Family That Drags Together", "All Stars Supergroup"],
+    episodeType: ["Talent Show", "Snatch Game", "Rusical", "Acting", "Stand-up", "Advert", "Makeover", "Finale"],
     lipSyncs: ["Shake It Off by Taylor Swift", "Le Freak (Freak Out) by Chic", "Tell It To My Heart by Taylor Dayne", "Got To Be Real by Cheryl Lynn", "Shut Up & Drive by Rihanna", "Cherry Bomb by Joan Jett and the Blackhearts", "Step It Up by RuPaul feat. Dave Audé", "If I Were Your Woman by Gladys Knight & The Pips"],
     synopses: ["10 queens return to compete for $100,000 and a place in the Drag Race Hall of Fame. The first test is to compete in a drag talent show. With guest judge Raven-Symoné.",
                "The queens impersonate celebrities in a quick-witted TV game show and burn rubber in a latex runway. With guest judge Ross Mathews.",
@@ -113,7 +114,7 @@ const divs = {
     nav: document.getElementById("nav-div"),
     navResults: document.getElementById("nav-results"),
     episodeInfo: document.getElementById("episode-info"),
-    progressTable: document.getElementById("progress-table")
+    resultsTable: document.getElementById("results-table-div")
 }
 
 const display = (function () {
@@ -163,6 +164,13 @@ const display = (function () {
         resultsButton.textContent="See Results";
         resultsButton.id="see-results";
         divs.navResults.appendChild(resultsButton);
+    }
+
+    const displayResetButton = function() {
+        const resetButton = document.createElement("button");
+        resetButton.textContent="Reset Results";
+        resetButton.id="reset-results";
+        divs.navResults.appendChild(resetButton);
     }
 
     const challengeHeaders = function() {
@@ -310,7 +318,6 @@ const display = (function () {
         weekDropdown.value = week.toString();
 
         challengeHeaders();
-
         updatePlacementDropdown();
     }
 
@@ -319,6 +326,7 @@ const display = (function () {
         createReturningButton();
         displayArrows();
         displayResultsButton();
+        displayResetButton();
     }
 
     return {init, update, updatePlacementDropdown};
@@ -361,13 +369,13 @@ const interface = (function () {
                 }
                 // Dropdown is set to Eliminated or Quit in the current week then set eliminated to true
                 eliminated = isEliminated(dropdownValue);
+                queens.queens[i].placement[week - 1] = dropdownValue;
 
                 // Cycle through the subsequent weeks
                 for (let j = week; j < competitionData.numberOfWeeks; j++) {
                     // Get initial values of placement and return for this week and value from dropdown
                     const initialPlacement = queens.queens[i].initialPlacement[j];
                     const initialReturns = queens.queens[i].initialReturn[j];
-                    queens.queens[i].placement[week - 1] = dropdownValue;
 
                     // If queen returns then set value of eliminated back to false
                     if (queens.queens[i].return[j]===true && !isEliminated(queens.queens[i].placement[j])) {eliminated = false};
@@ -432,19 +440,32 @@ const interface = (function () {
             if (yesRadio) {yesRadio.addEventListener("change", () => updatePlacements(queens.queens[i], "Yes"))};
             if (noRadio) {noRadio.addEventListener("change", () => updatePlacements(queens.queens[i], "No"))};
         }
-    }
+    };
 
     const updateResultsTable = function () {
         const resultsButton = document.getElementById("see-results");
 
         resultsButton.addEventListener("click", displayProgress.createTable)
-    } 
+    };
+
+    const resetResults = function () {
+        const resetButton = document.getElementById("reset-results");
+
+        resetButton.addEventListener("click", function () {
+            for (i=0; i < queens.numberOfQueens; i++) {
+                queens.queens[i].placement = queens.queens[i].initialPlacement.slice();
+
+                display.updatePlacementDropdown();
+            }
+        });
+    };
 
     const eventListeners = function () {
         arrowListeners();
         placementUpdate();
         returningUpdate();
         updateResultsTable();
+        resetResults();
     }
 
     return { eventListeners };
@@ -493,55 +514,89 @@ const displayProgress = (function () {
     }
 
     const createTable = function () {
+        // Create empty table elements
         const tbl = document.createElement("table");
+        tbl.id = "results-table";
         const tblBody = document.createElement("tbody");
-
         const tblHeader=document.createElement("thead");
+
+        headerRow1=document.createElement("tr");
+        headerRow2=document.createElement("tr");
+        headerRow3=document.createElement("tr");
+
+        // Create blank cell which will appear above the queen names
         const queensHeader=document.createElement("th");
-        queensHeader.textContent="Queen";
+        queensHeader.textContent="";
         queensHeader.className="queen-name"
+        queensHeader.rowSpan=3;
 
-        tblHeader.appendChild(queensHeader);
+        // Create weeks header that says "Epsiodes"
+        const weeksHeader=document.createElement("th");
+        weeksHeader.textContent="Epsiode";
+        weeksHeader.className="weeks-header";
+        weeksHeader.colSpan=competitionData.numberOfWeeks;
 
+        // Put together the two cells to create the first row of the header
+        headerRow1.appendChild(queensHeader);
+        headerRow1.appendChild(weeksHeader);
+
+        // Loop through each week to create headers and short episode summary
         for (let i=0; i < competitionData.numberOfWeeks; i++) {
-            const headCell = document.createElement("th");
-            headCell.textContent=`${i+1}`;
-            tblHeader.appendChild(headCell);
+            const weekNum = document.createElement("th");
+            weekNum.textContent=`${i+1}`;
+            headerRow2.appendChild(weekNum);
+
+
+            const episodeType = document.createElement("th");
+            episodeType.textContent=`${competitionData.episodeType[i]}`;
+            episodeType.className="episode-type";
+            headerRow3.appendChild(episodeType);
         }
 
+        // Put header rows all together
+        tblHeader.appendChild(headerRow1);
+        tblHeader.appendChild(headerRow2);
+        tblHeader.appendChild(headerRow3);
+
+        // Get elimination order of queens
         const sortedQueens = eliminationOrder();
 
+        // Get content for table body
         for (let k = 0; k < queens.numberOfQueens; k++) {
+            // Replace index k with index i which selects the queens in order of elimination
             const i = sortedQueens[k].index;
 
+            // Get queen name
             const row = document.createElement("tr");
             const queenNameCell = document.createElement("th");
             const queenName = document.createTextNode(queens.queens[i].queen);
       
+            // Append queen name to row
             queenNameCell.appendChild(queenName);
             queenNameCell.className="queen-name"
             row.appendChild(queenNameCell);
 
+            // Get results for each week and add to row
             for (j = 0; j < competitionData.numberOfWeeks; j++) {
+                // Formatted result for table
                 const formattedResult=formatResult(queens.queens[i].placement[j]);
                 const weekCell = document.createElement("td");
                 const weekResult = document.createTextNode(formattedResult);
-                weekCell.className="result " + formattedResult.replaceAll(" ", "");
+                weekCell.className="result " + formattedResult.toLowerCase().replaceAll(" ", "");
                 weekCell.appendChild(weekResult);
                 row.appendChild(weekCell);
             }   
 
-            row.className="queen-row";
+            row.className="queen-result-row";
+            row.id=`queen${i}-result-row`; // Initial index of queen, not row number in the table
             tblBody.appendChild(row);        
         }
 
-        
-        // append the <tbody> inside the <table>
+        // Reset HTML and add complete table
+        divs.resultsTable.innerHTML="";
         tbl.appendChild(tblHeader);
         tbl.appendChild(tblBody);
-        // put <table> in the <body>
-        divs.progressTable.innerHTML="";
-        divs.progressTable.appendChild(tbl);
+        divs.resultsTable.appendChild(tbl);
     };
 
     return {createTable};
