@@ -123,10 +123,43 @@ input[type=radio] {
     margin: 1rem;
 }
 
+select, button {
+    font-size: 1.1rem;
+    padding: 0.2rem 1rem;
+    border-radius: 0.4rem;
+    border: 0;
+    text-align: center;
+}
+
+select#week-select {
+    border: rgba(50,17,35,255) 0.2rem solid;
+    background-color: rgba(234,195,217,255);
+    color: rgba(50,17,35,255);
+    font-weight: bold;
+    padding: 0.3rem 1.2rem;
+}
+
 /* Results table CSS */
 #results-table-div {
     display: flex;
     justify-content: center;
+    border-collapse: collapse;
+}
+
+td, th {
+  padding: 0.2rem;
+}
+  
+th {
+  background-color: rgb(237, 237, 242);
+}
+
+tr {
+    background-color: rgb(249, 249, 255);
+}
+
+tr.out {
+    background-color: auto;
 }
 
 #results-table {
