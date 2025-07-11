@@ -19,20 +19,6 @@ const competitionData = {
     finalePlacements: ["Winner", "Runner Up", "Eliminated", "Out"]
 }
 
-const competitionMechanics = {
-    calculatePoints: function(placement) {
-        if (placement="Win") {let points=6}
-        else if (placement==="Top 2") {points=5}
-        else if (placement==="High") {points=4}
-        else if (placement==="Safe") {points=3}
-        else if (placement==="Low") {points=2}
-        else if (placement==="Bottom") {points=1}
-        else if (placement==="Eliminated") {points=0}
-        else if (placement==="Out" || placement==="Quit") {points=0};
-        return points;
-    }
-}
-
 const queens = (function () {
     const queen0 = {
         queen: "Adore Delano",
@@ -115,8 +101,7 @@ const divs = {
     queens: document.getElementById("queens-div"),
     nav: document.getElementById("nav-div"),
     navResults: document.getElementById("nav-results"),
-    episodeInfo: document.getElementById("episode-info"),
-    resultsTable: document.getElementById("results-table-div")
+    episodeInfo: document.getElementById("episode-info")
 }
 
 const display = (function () {
@@ -181,10 +166,10 @@ const display = (function () {
     }
 
     const challengeHeaders = function() {
-        title  = competitionData.episodes[week-1];
-        lipSync = competitionData.lipSyncs[week-1];
-        synopsis = competitionData.synopses[week-1];
-        runway = competitionData.runways[week-1];
+        const title  = competitionData.episodes[week-1];
+        const lipSync = competitionData.lipSyncs[week-1];
+        const synopsis = competitionData.synopses[week-1];
+        const runway = competitionData.runways[week-1];
 
         divs.episodeInfo.innerHTML = `
             <h2 id="episode-title">${title}</h2>
@@ -280,7 +265,7 @@ const display = (function () {
         const select = document.createElement("select");
         select.className = "placement-select";
 
-        placementsArray = week < competitionData.numberOfWeeks ? competitionData.placements.slice() : competitionData.finalePlacements.slice();
+        const placementsArray = week < competitionData.numberOfWeeks ? competitionData.placements.slice() : competitionData.finalePlacements.slice();
 
         // Add options from 1 to numberOfWeeks
         for (let i = 0; i <= placementsArray.length-1; i++) {
@@ -297,8 +282,8 @@ const display = (function () {
     }
 
     const updatePlacementDropdownWeek = function() {
-        if ((week===competitionData.numberOfWeeks && interface.getPreviousWeek()!==competitionData.numberOfWeeks) 
-            || (week!==competitionData.numberOfWeeks && interface.getPreviousWeek()===competitionData.numberOfWeeks)) {
+        if ((week===competitionData.numberOfWeeks && control.getPreviousWeek()!==competitionData.numberOfWeeks) 
+            || (week!==competitionData.numberOfWeeks && control.getPreviousWeek()===competitionData.numberOfWeeks)) {
             for (i=0; i < queens.numberOfQueens; i++) {
                 const queenDropdown = document.getElementById(`queen-dropdown${i}`);
                 queenDropdown.remove();
@@ -307,7 +292,7 @@ const display = (function () {
                 createPlacementDropdown(innerDiv, `queen-dropdown${i}`);
             };
             // Add event listener back to dropdown
-            interface.placementUpdateListener();
+            control.placementUpdateListener();
         }
     }
 
@@ -355,7 +340,7 @@ const display = (function () {
 })();
 
 
-const interface = (function () {
+const control = (function () {
     var previousWeek=week;
 
     const arrowListeners = function () {
@@ -474,11 +459,12 @@ const interface = (function () {
         }
     };
 
-    const updateResultsTable = function () {
-        const resultsButton = document.getElementById("see-results");
+    // Code from when the results table was included on the main page
+    // const updateResultsTable = function () {
+    //     const resultsButton = document.getElementById("see-results");
 
-        resultsButton.addEventListener("click", displayProgress.createTable)
-    };
+    //     resultsButton.addEventListener("click", displayProgress.createTable)
+    // };
 
     const resetResults = function () {
         const resetButton = document.getElementById("reset-results");
@@ -496,15 +482,17 @@ const interface = (function () {
         arrowListeners();
         placementUpdateListener();
         returningUpdate();
-        updateResultsTable();
         resetResults();
     }
 
     return { getPreviousWeek, eventListeners, placementUpdateListener };
 })();
 
-display.init();
-display.weekUpdate();
-interface.eventListeners();
+// display.init();
+// display.weekUpdate();
+// control.eventListeners();
 
-export { queens, competitionData };
+// Probably ideally should split the queens object into data and functions so that the whole data object can be exported and won't cause issues by including the funcitons
+// export const queensArray = queens.queens;
+// export const numberOfQueens = queens.numberOfQueens;
+export {display, control, queens, competitionData};

@@ -1,5 +1,9 @@
 import { queens, competitionData } from "./script.js";
 
+const divs = {
+    resultsTable: document.getElementById("results-table-div")
+}
+
 const displayProgress = (function () {
     // Format to change full typed out results to what appears in the results table
     const formatResult = function(result) {
@@ -27,7 +31,7 @@ const displayProgress = (function () {
 
     // Function to create object with elimination order for the queens
     const eliminationOrder = function () {
-        weeksInCompetition = new Array(queens.numberOfQueens);
+        const weeksInCompetition = new Array(queens.numberOfQueens);
         for (let i=0; i < queens.numberOfQueens; i++) {
             var lastWeekIn=1;
             var lastPoints=0;
@@ -55,22 +59,21 @@ const displayProgress = (function () {
     }
 
     const calculatePPE = function () {
-        ppeScores = new Array(queens.numberOfQueens);
+        const ppeScores = new Array(queens.numberOfQueens);
 
-        for (i = 0; i < queens.numberOfQueens; i++) {
+        for (let i = 0; i < queens.numberOfQueens; i++) {
             var weeksInCompetition=0;
             var totalPoints=0;
 
-            for (j = 0; j < competitionData.numberOfWeeks; j++) {
+            for (let j = 0; j < competitionData.numberOfWeeks; j++) {
                 if (queens.queens[i].placement[j]!=="Out" && queens.queens[i].placement[j]!=="Quit" && competitionData.competitiveEpisode[j]) {
                     weeksInCompetition++;
                     totalPoints += resultPoints(queens.queens[i].placement[j]);
                 }
             }
 
-            ppe = totalPoints / weeksInCompetition;
-
-            ppeRounded = Math.round(ppe*100)/100;
+            const ppe = totalPoints / weeksInCompetition;
+            const ppeRounded = Math.round(ppe*100)/100;
 
             ppeScores[i] = {index: i,
                             queen: queens.queens[i].queen,
@@ -88,9 +91,9 @@ const displayProgress = (function () {
         const tblBody = document.createElement("tbody");
         const tblHeader=document.createElement("thead");
 
-        headerRow1=document.createElement("tr");
-        headerRow2=document.createElement("tr");
-        headerRow3=document.createElement("tr");
+        const headerRow1=document.createElement("tr");
+        const headerRow2=document.createElement("tr");
+        const headerRow3=document.createElement("tr");
 
         // Create blank cell which will appear above the queen names
         const queensHeader=document.createElement("th");
@@ -151,7 +154,7 @@ const displayProgress = (function () {
             row.appendChild(queenNameCell);
 
             // Get results for each week and add to row
-            for (j = 0; j < competitionData.numberOfWeeks; j++) {
+            for (let j = 0; j < competitionData.numberOfWeeks; j++) {
                 // Formatted result for table
                 const formattedResult = formatResult(queens.queens[i].placement[j]);
                 const weekCell = document.createElement("td");
@@ -164,7 +167,7 @@ const displayProgress = (function () {
                 row.appendChild(weekCell);
             }
 
-            ppeScores = calculatePPE();
+            const ppeScores = calculatePPE();
             const ppe = document.createElement("td");
             const ppeText = document.createTextNode(`${ppeScores[i].ppe}`);
             ppe.className = "ppe-cell";
