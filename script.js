@@ -14,7 +14,9 @@ const competitionData = {
                "The queens must makeover family members and vogue the house down. Aubrey Plaza (Parks and Recreation) guest judges.",
                "The winner of RuPaul’s Drag Race All Stars is crowned. But first, the queens must write original rap lyrics and perform as the ultimate girl group."] ,
     runways: [null, "Latex Eleganza", "The Future of Drag", "Two Looks in One", null, "Pants on the Runway", "Makeover Challenge", "Final Eleganza"],
-    placements: ["Win", "Top 2", "High", "Safe", "Low", "Bottom", "Eliminated", "Out", "Quit"]
+    competitiveEpisode: [true, true, true, true, true, true, true, false],
+    placements: ["Win", "Top 2", "High", "Safe", "Low", "Bottom", "Eliminated", "Out", "Quit"],
+    finalePlacements: ["Winner", "Runner Up", "Eliminated", "Out"]
 }
 
 const competitionMechanics = {
@@ -40,7 +42,7 @@ const queens = (function () {
 
     const queen1 = {
         queen: "Alaska",
-        initialPlacement: ["High", "Win", "Safe", "Win", "Top 2", "Win", "Bottom", "Win"],
+        initialPlacement: ["High", "Win", "Safe", "Win", "Top 2", "Win", "Bottom", "Winner"],
         initialReturn: Array(competitionData.numberOfWeeks).fill(false)
     };
 
@@ -58,7 +60,7 @@ const queens = (function () {
     
     const queen4 = {
         queen: "Detox",
-        initialPlacement: ["Safe", "Bottom", "Top 2", "Safe", "Top 2", "Safe", "Win", "High"],
+        initialPlacement: ["Safe", "Bottom", "Top 2", "Safe", "Top 2", "Safe", "Win", "Runner Up"],
         initialReturn: Array(competitionData.numberOfWeeks).fill(false),
     };
     
@@ -70,7 +72,7 @@ const queens = (function () {
     
     const queen6 = {
         queen: "Katya",
-        initialPlacement: ["Safe", "Top 2", "Bottom", "Bottom", "Safe", "Top 2", "Top 2", "High"],
+        initialPlacement: ["Safe", "Top 2", "Bottom", "Bottom", "Safe", "Top 2", "Top 2", "Runner Up"],
         initialReturn: Array(competitionData.numberOfWeeks).fill(false),
     };
     
@@ -194,11 +196,9 @@ const display = (function () {
             displayObjects[i].innerHTML=`<div id="queen-image-box${i}"><img src=${queens.queens[i].img} class="queen-image" id="queen-image${i}"></div>
                                          <h3 class="queen-name">${queens.queens[i].queen}</h3>`;
 
-            const dropdown = createPlacementDropdown();
-            dropdown.select.id=`queen-dropdown${i}`;
             divs.queens.appendChild(displayObjects[i]);
             const innerDiv = document.getElementById(`queen${i}`);
-            innerDiv.append(dropdown.select);
+            createPlacementDropdown(innerDiv, `queen-dropdown${i}`);
         }
     }
 
@@ -270,26 +270,41 @@ const display = (function () {
         }
     };
 
-    const createPlacementDropdown = function() {
+    const createPlacementDropdown = function(div, id) {
         // Create the select dropdown
         const select = document.createElement("select");
         select.className = "placement-select";
 
+        placementsArray = week < competitionData.numberOfWeeks ? competitionData.placements.slice() : competitionData.finalePlacements.slice();
+
         // Add options from 1 to numberOfWeeks
-        for (let i = 0; i <= competitionData.placements.length-1; i++) {
-            if ( competitionData.placements[i]!=="Out"){
+        for (let i = 0; i <= placementsArray.length-1; i++) {
+            if ( placementsArray[i]!=="Out"){
                 const option = document.createElement("option");
-                option.textContent = competitionData.placements[i];
-                option.value = competitionData.placements[i];
+                option.textContent = placementsArray[i];
+                option.value = placementsArray[i];
                 select.appendChild(option);
             }
         }
-
-        // Append label and select to the container
-        return {select}
+        
+        select.id=id;
+        div.append(select);
     }
 
+    const updatePlacementDropdownWeek = function() {
+        if ((week===competitionData.numberOfWeeks && interface.getPreviousWeek()!==competitionData.numberOfWeeks) 
+            || (week!==competitionData.numberOfWeeks && interface.getPreviousWeek()===competitionData.numberOfWeeks)) {
+            for (i=0; i < queens.numberOfQueens; i++) {
+                const queenDropdown = document.getElementById(`queen-dropdown${i}`);
+                queenDropdown.remove();
 
+                const innerDiv = document.getElementById(`queen${i}`);
+                createPlacementDropdown(innerDiv, `queen-dropdown${i}`);
+            };
+            // Add event listener back to dropdown
+            interface.placementUpdateListener();
+        }
+    }
 
     const updatePlacementDropdown = function() {
         for (let i = 0; i < queens.numberOfQueens; i++) {
@@ -303,22 +318,12 @@ const display = (function () {
 
             queenImage.className = "queen-image " + placementAtWeek.toLowerCase().replaceAll(" ", "");
             queenImageBox.className = "queen-image-box " + placementAtWeek.toLowerCase().replaceAll(" ", "");
+            if (week===competitionData.numberOfWeeks) {queenImageBox.className = queenImageBox.className + " finale"};
 
             updateReturningButton();
             // if (placementAtWeek==="Out") {queenImage.className="queen-image out"}
             // else {queenImage.className="queen-image"};
         }
-    }
-
-    const update = function() {
-        document.getElementById("left-arrow").style.display = week > 1 ? "inline-block" : "none";
-        document.getElementById("right-arrow").style.display = week < competitionData.numberOfWeeks ? "inline-block" : "none";
-
-        const weekDropdown = document.getElementById("week-select");
-        weekDropdown.value = week.toString();
-
-        challengeHeaders();
-        updatePlacementDropdown();
     }
 
     const init = function() {
@@ -329,30 +334,52 @@ const display = (function () {
         displayResetButton();
     }
 
-    return {init, update, updatePlacementDropdown};
+    const weekUpdate = function() {
+        document.getElementById("left-arrow").style.display = week > 1 ? "inline-block" : "none";
+        document.getElementById("right-arrow").style.display = week < competitionData.numberOfWeeks ? "inline-block" : "none";
+
+        const weekDropdown = document.getElementById("week-select");
+        weekDropdown.value = week.toString();
+
+        challengeHeaders();
+        updatePlacementDropdownWeek();
+        updatePlacementDropdown();
+    }
+
+    return {init, weekUpdate, updatePlacementDropdown};
 })();
 
 
 const interface = (function () {
+    var previousWeek=week;
+
     const arrowListeners = function () {
         divs.nav.addEventListener("click", function (e) {
             if (e.target.id === "left-arrow" && week > 1) {
+                previousWeek=week;
                 week--;
-                display.update();
+                display.weekUpdate();
             } else if (e.target.id === "right-arrow" && week < competitionData.numberOfWeeks) {
+                previousWeek=week;
                 week++;
-                display.update();
+                display.weekUpdate();
             }
         });
 
         divs.nav.addEventListener("change", function (e) {
             if (e.target.id === "week-select") {
+                previousWeek=week;
                 week = parseInt(e.target.value);
-                display.update();
+                display.weekUpdate();
             }
         });
     }
-    const placementUpdate = function () {
+
+    const getPreviousWeek = function() {
+        return previousWeek;
+    } 
+
+    const placementUpdateListener = function () {
         for (let i = 0; i < queens.numberOfQueens; i++) {
             const dropdown=document.getElementById(`queen-dropdown${i}`);
             
@@ -394,11 +421,11 @@ const interface = (function () {
                     if (eliminated===false) {
                         // If queen is not eliminated and was not eliminated by this stage in the original competition results then set to original results
                         if (queens.queens[i].placement[j]==="Out" && initialPlacement!=="Out") {
-                            queens.queens[i].placement[j]=initialPlacement;
+                            queens.queens[i].placement[j] = initialPlacement;
                         };
                         // If queen was eliminated by this point then set to Safe
                         if (queens.queens[i].placement[j]==="Out" && initialPlacement==="Out") {
-                            queens.queens[i].placement[j]="Safe";
+                            queens.queens[i].placement[j] = j<competitionData.numberOfWeeks-1 ? "Safe" : "Runner Up";
                         };
 
                         // Set returns back to false since in the competition
@@ -462,16 +489,17 @@ const interface = (function () {
 
     const eventListeners = function () {
         arrowListeners();
-        placementUpdate();
+        placementUpdateListener();
         returningUpdate();
         updateResultsTable();
         resetResults();
     }
 
-    return { eventListeners };
+    return { getPreviousWeek, eventListeners, placementUpdateListener };
 })();
 
 const displayProgress = (function () {
+    // Format to change full typed out results to what appears in the results table
     const formatResult = function(result) {
         if (result==="Bottom") {return "BTM"}
         else if (result==="Eliminated") {return "ELIM"}
@@ -479,38 +507,76 @@ const displayProgress = (function () {
         else {return result.toUpperCase()}
     };
 
+    // Points per episode function
+    const resultPoints = function(result) {
+        if (result==="Eliminated") {return 0}
+        else if (result==="Quit") {return 0}
+        else if (result==="Bottom") {return 1}
+        else if (result==="Low") {return 2}
+        else if (result==="Safe") {return 3}
+        else if (result==="High") {return 4}
+        else if (result==="Top 2") {return 5}
+        else if (result==="Win") {return 6}
+        else if (result==="Winner") {return 999}
+        else if (result==="Runner Up") {return 998}
+        else {console.log(`Warning: Update resultPoints format to account for ${result}`)}
+
+    }
+
+    // Function to create object with elimination order for the queens
     const eliminationOrder = function () {
-        resultPoints = function(result) {
-            if (result==="Eliminated") {return 0}
-            else if (result==="Quit") {return 0}
-            else if (result==="Bottom 2") {return 1}
-            else if (result==="Low") {return 2}
-            else if (result==="Safe") {return 3}
-            else if (result==="High") {return 4}
-            else if (result==="Top 2") {return 5}
-            else if (result==="Win") {return 6}
-
-        }
-
         weeksInCompetition = new Array(queens.numberOfQueens);
         for (let i=0; i < queens.numberOfQueens; i++) {
             var lastWeekIn=1;
             var lastPoints=0;
+
+            // Get last week where queen is not "Out"
             for (let j=0; j < competitionData.numberOfWeeks; j++){
                 if (queens.queens[i].placement[j]!=="Out") {
                     lastWeekIn=j+1;
                     lastPoints=resultPoints(queens.queens[i].placement[j]);
                 };
             }
-            weeksInCompetition[i]={index: i, 
+
+            weeksInCompetition[i]={index: i,
+                                   queen: queens.queens[i].queen,
                                    weeks: lastWeekIn,
                                    lastPoints: lastPoints
                                 };
 
         }
+
+        // Sort by number of points in the last week so that finale winner is shown first
         weeksInCompetition.sort((a,b) => b.lastPoints - a.lastPoints);
         weeksInCompetition.sort((a,b) => b.weeks - a.weeks);
         return weeksInCompetition;        
+    }
+
+    const calculatePPE = function () {
+        ppeScores = new Array(queens.numberOfQueens);
+
+        for (i = 0; i < queens.numberOfQueens; i++) {
+            var weeksInCompetition=0;
+            var totalPoints=0;
+
+            for (j = 0; j < competitionData.numberOfWeeks; j++) {
+                if (queens.queens[i].placement[j]!=="Out" && queens.queens[i].placement[j]!=="Quit" && competitionData.competitiveEpisode[j]) {
+                    weeksInCompetition++;
+                    totalPoints += resultPoints(queens.queens[i].placement[j]);
+                }
+            }
+
+            ppe = totalPoints / weeksInCompetition;
+
+            ppeRounded = Math.round(ppe*100)/100;
+
+            ppeScores[i] = {index: i,
+                            queen: queens.queens[i].queen,
+                            ppe: ppeRounded
+            }
+        }
+
+        return ppeScores;
     }
 
     const createTable = function () {
@@ -536,9 +602,16 @@ const displayProgress = (function () {
         weeksHeader.className="weeks-header";
         weeksHeader.colSpan=competitionData.numberOfWeeks;
 
+        // Create blank cell with "PPE"
+        const ppeHeader=document.createElement("th");
+        ppeHeader.textContent="PPE";
+        ppeHeader.className="ppe-header";
+        ppeHeader.rowSpan=3;
+
         // Put together the two cells to create the first row of the header
         headerRow1.appendChild(queensHeader);
         headerRow1.appendChild(weeksHeader);
+        headerRow1.appendChild(ppeHeader);
 
         // Loop through each week to create headers and short episode summary
         for (let i=0; i < competitionData.numberOfWeeks; i++) {
@@ -546,12 +619,11 @@ const displayProgress = (function () {
             weekNum.textContent=`${i+1}`;
             headerRow2.appendChild(weekNum);
 
-
             const episodeType = document.createElement("th");
             episodeType.textContent=`${competitionData.episodeType[i]}`;
             episodeType.className="episode-type";
             headerRow3.appendChild(episodeType);
-        }
+        };
 
         // Put header rows all together
         tblHeader.appendChild(headerRow1);
@@ -579,13 +651,23 @@ const displayProgress = (function () {
             // Get results for each week and add to row
             for (j = 0; j < competitionData.numberOfWeeks; j++) {
                 // Formatted result for table
-                const formattedResult=formatResult(queens.queens[i].placement[j]);
+                const formattedResult = formatResult(queens.queens[i].placement[j]);
                 const weekCell = document.createElement("td");
                 const weekResult = document.createTextNode(formattedResult);
                 weekCell.className="result " + formattedResult.toLowerCase().replaceAll(" ", "");
+                if (j === competitionData.numberOfWeeks-1) {
+                    weekCell.className += " finale-cell";
+                };
                 weekCell.appendChild(weekResult);
                 row.appendChild(weekCell);
-            }   
+            }
+
+            ppeScores = calculatePPE();
+            const ppe = document.createElement("td");
+            const ppeText = document.createTextNode(`${ppeScores[i].ppe}`);
+            ppe.className = "ppe-cell";
+            ppe.appendChild(ppeText);
+            row.appendChild(ppe);
 
             row.className="queen-result-row";
             row.id=`queen${i}-result-row`; // Initial index of queen, not row number in the table
@@ -603,6 +685,6 @@ const displayProgress = (function () {
 })();
 
 display.init();
-display.update();
+display.weekUpdate();
 displayProgress.createTable();
 interface.eventListeners();

@@ -2,13 +2,16 @@
     --queen-border-size: 0.6rem;
     
     /* Colours for different placements */
-    --win-color: rgb(150, 235, 24);
-    --top2-color: rgb(204, 255, 128);
-    --high-color: rgb(231, 252, 200);
-    --low-color: rgb(255, 173, 173);
-    --bottom-color: rgb(255, 119, 119);
-    --elim-color: red;
-    --quit-color: darkred;
+    --win-color: rgb(65, 105, 225);
+    --top2-color: rgb(0, 191, 255);
+    --high-color: rgb(173, 216, 230);
+    --low-color: rgb(255, 182, 193);
+    --bottom-color: rgb(255, 99, 71);
+    --elim-color: rgb(255, 0, 0);
+    --quit-color: rgb(219, 112, 147);
+    --winner-color: rgb(255, 255, 0);
+    --runnerup-color: rgb(192, 192, 192);
+    --elimfinale-color: rgb(223, 143, 107);
 }
 
 body {
@@ -55,6 +58,21 @@ body {
 .queen-image-box.bottom, 
 .queen-image-box.eliminated {
     border: var(--elim-color) solid var(--queen-border-size);
+    margin: 0;
+}
+
+.queen-image-box.eliminated.finale {
+    border: var(--elimfinale-color) solid var(--queen-border-size);
+    margin: 0;
+}
+
+.queen-image-box.winner {
+    border: var(--winner-color) solid var(--queen-border-size);
+    margin: 0;
+}
+
+.queen-image-box.runnerup {
+    border: var(--runnerup-color) solid var(--queen-border-size);
     margin: 0;
 }
 
@@ -115,8 +133,13 @@ input[type=radio] {
     font-size: 1.5rem;
 }
 
-td {
+td.result {
     width: 5rem;
+}
+
+td.result.finale-cell {
+    width: auto;
+    padding: 0 1rem;
 }
 
 th.queen-name {
@@ -124,11 +147,16 @@ th.queen-name {
     padding-right: 1.5rem;
 }
 
+.ppe-cell {
+    padding-left: 1rem;
+}
+
 .episode-type {
     font-size: 0.9rem;
 }
 
-#results-table td.result.win {
+#results-table td.result.win,
+#results-table td.result.winner {
     background-color: var(--win-color);
 }
 
@@ -154,4 +182,16 @@ th.queen-name {
 
 #results-table td.result.quit {
     background-color: var(--quit-color);
+}
+
+#results-table td.result.winner {
+    background-color: var(--winner-color);
+}
+
+#results-table td.result.runnerup {
+    background-color: var(--runnerup-color);
+}
+
+#results-table td.result.finale-cell.elim {
+    background-color: var(--elimfinale-color);
 }
