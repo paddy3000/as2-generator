@@ -20,6 +20,10 @@ body {
     box-sizing: border-box;
 }
 
+h3 {
+    /* letter-spacing: 1px; */
+}
+
 #episode-info {
     height: 11rem;
 }
