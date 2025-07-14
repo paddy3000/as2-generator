@@ -12,12 +12,50 @@
     --winner-color: rgb(255, 255, 0);
     --runnerup-color: rgb(192, 192, 192);
     --elimfinale-color: rgb(223, 143, 107);
+    --light-accent: rgba(234,195,217,255);
+    --lighter-accent: rgb(224, 212, 219);
+    --dark-accent: rgba(50,17,35,255);
 }
 
 body {
     font-family: Arial, Helvetica, sans-serif;
     text-align: center;
     box-sizing: border-box;
+    padding: 0;
+    padding-top: 75px;
+    margin: 0;
+}
+
+h2 {
+    margin: 0;
+    padding: 1.5rem 0 1rem 0;
+}
+
+#main-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--light-accent);
+    padding: 0 2rem;
+    border-bottom: 0.2rem var(--dark-accent) solid;
+    position: fixed;  
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 999;
+    width: 100w;
+}
+
+#nav-div {
+    background-color: var(--lighter-accent);
+    padding:  0;
+}
+
+#info-button {
+    border-radius: 4rem;
+    font-size: 1.5rem;
+    height: 3rem;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 }
 
 h3 {
@@ -25,7 +63,11 @@ h3 {
 }
 
 #episode-info {
-    height: 11rem;
+    height: 13rem;
+    background-color: var(--lighter-accent);
+    width: 100w;
+    display: flex;
+    flex-direction: column;
 }
 
 #synopsis {
@@ -36,9 +78,11 @@ h3 {
     display: flex;
     flex-wrap: wrap;
     gap: 2rem;
+    padding: 2rem;
     justify-content: center;
     width: min(100vw, 1300px);
     justify-self: center;
+    width: 100w;
 }
 
 .queen-image-box {
@@ -111,12 +155,12 @@ input[type=radio] {
     text-align: center;
 }
 
-#weeks-nav {
+#nav-weeks {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 1.5rem;
-    margin: 2rem 0 1.5rem 0;
+    padding: 2rem 0 1.5rem 0;
 }
 
 #nav-results {
@@ -124,7 +168,7 @@ input[type=radio] {
     justify-content: center;
     align-items: center;
     gap: 1.5rem;
-    margin: 1rem;
+    padding: 1rem;
 }
 
 select, button {
@@ -137,8 +181,8 @@ select, button {
 
 select#week-select {
     border: rgba(50,17,35,255) 0.2rem solid;
-    background-color: rgba(234,195,217,255);
-    color: rgba(50,17,35,255);
+    /* background-color: var(--light-accent); */
+    color: var(--dark-accent);
     font-weight: bold;
     padding: 0.3rem 1.2rem;
 }

@@ -26,9 +26,10 @@ const display = (function () {
     }
 
     const createArrows = function() {
+        const navDiv = document.getElementById("nav-div");
         const weeksNavDiv = document.createElement("div");
-        weeksNavDiv.id = "weeks-nav";
-        document.body.appendChild(weeksNavDiv);
+        weeksNavDiv.id = "nav-weeks";
+        navDiv.appendChild(weeksNavDiv);
 
         const leftArrow = document.createElement("input");
         leftArrow.type = "image";
@@ -52,9 +53,10 @@ const display = (function () {
     }
 
     const createResultsNavDiv = function() {
+        const navDiv = document.getElementById("nav-div");
         const navResults = document.createElement("div");
         navResults.id = "nav-results";
-        document.body.appendChild(navResults);
+        navDiv.appendChild(navResults);
     }
 
     const createResultsButton = function() {
@@ -252,6 +254,7 @@ const display = (function () {
         createEpisodeHeaders();
         displayQueens();
         createReturningButton();
+        universalDisplay.createNavDiv();
         createArrows();
         createResultsNavDiv();
         createResultsButton();

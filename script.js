@@ -122,17 +122,39 @@ const storage = (function() {
 
 const universalDisplay = (function() {
     const createHeading = function() {
+        // Main heading div
         const headingDiv = document.createElement("div");
         headingDiv.id = "main-heading";
 
+        // Left and right divs to go inside main header div
+        const leftDiv = document.createElement("div");
+        leftDiv.id = "main-heading-left";
+        const rightDiv = document.createElement("div");
+        rightDiv.id = "main-heading-right";
+
+        // Create main heading
         const heading = document.createElement("h1");
         heading.textContent = "All Stars 2 Derigger";
+        leftDiv.appendChild(heading);
 
-        headingDiv.appendChild(heading);
+        // Create info button
+        const info = document.createElement("button");
+        info.id = "info-button";
+        info.innerText = "info";
+        rightDiv.appendChild(info);
+
+        headingDiv.appendChild(leftDiv);
+        headingDiv.appendChild(rightDiv);
         document.body.appendChild(headingDiv);
     }
 
-    return { createHeading };
+    const createNavDiv = function() {
+        const navDiv = document.createElement("div");
+        navDiv.id = "nav-div";
+        document.body.appendChild(navDiv);
+    }
+
+    return { createHeading, createNavDiv };
 })();
 
 export {queens, competitionData, storage, currentStatus, universalDisplay};

@@ -14,8 +14,8 @@ const displayGeneric = (function() {
     };
 
     const createHomeButton = function() {
-        const resultsNavDiv = document.createElement("div");
-        resultsNavDiv.id="results-nav-div";
+        universalDisplay.createNavDiv();
+        const navDiv = document.getElementById("nav-div");
 
         const homeLink = document.createElement("a");
         homeLink.href = "index.html";
@@ -25,7 +25,7 @@ const displayGeneric = (function() {
         resultsButton.id="home-button";
 
         homeLink.appendChild(resultsButton);
-        resultsNavDiv.appendChild(homeLink);
+        navDiv.appendChild(homeLink);
         document.body.appendChild(resultsNavDiv);
     };
 
