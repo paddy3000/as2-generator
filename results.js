@@ -1,8 +1,36 @@
-import { queens, competitionData } from "./script.js";
+import { queens, competitionData, globalFunctions} from "./script.js";
 
-const divs = {
-    resultsTable: document.getElementById("results-table-div")
-}
+const displayGeneric = (function() {
+    const createHeaders = function() {
+        const subheadingDiv = document.createElement("div");
+        subheadingDiv.id = "results-subheading";
+
+        const subheading = document.createElement("h2");
+        subheading.textContent = "Contestant Progress"
+
+        subheadingDiv.appendChild(subheading);
+        document.body.appendChild(subheadingDiv);
+        console.log("subheading")
+    };
+
+    const createHomeButton = function() {
+        const resultsNavDiv = document.createElement("div");
+        resultsNavDiv.id="results-nav-div";
+
+        const homeLink = document.createElement("a");
+        homeLink.href = "index.html";
+
+        const resultsButton = document.createElement("button");
+        resultsButton.textContent="Home";
+        resultsButton.id="home-button";
+
+        homeLink.appendChild(resultsButton);
+        resultsNavDiv.appendChild(homeLink);
+        document.body.appendChild(resultsNavDiv);
+    };
+
+    return { createHeaders, createHomeButton };
+})();
 
 const displayProgress = (function () {
     // Format to change full typed out results to what appears in the results table
@@ -176,18 +204,22 @@ const displayProgress = (function () {
 
             row.className="queen-result-row";
             row.id=`queen${i}-result-row`; // Initial index of queen, not row number in the table
-            tblBody.appendChild(row);        
+            tblBody.appendChild(row);
         }
 
         // Reset HTML and add complete table
-        divs.resultsTable.innerHTML="";
+        const resultsTable = document.createElement("div");
+        resultsTable.id = "results-table-div";
+
         tbl.appendChild(tblHeader);
         tbl.appendChild(tblBody);
-        divs.resultsTable.appendChild(tbl);
+        resultsTable.appendChild(tbl);
+        document.body.appendChild(resultsTable);
     };
-
     return {createTable};
 })();
 
-
+globalFunctions.getData();
+displayGeneric.createHeaders();
 displayProgress.createTable();
+displayGeneric.createHomeButton();

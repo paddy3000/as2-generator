@@ -92,6 +92,32 @@ const queens = (function () {
     return {queens, numberOfQueens};
 })();
 
+const globalFunctions = (function() {
+    // Save data
+    const saveData = function() {
+        console.log(`queens.queens array saved to local storage`);
+        localStorage.setItem("queensData", JSON.stringify(queens.queens));  
+        localStorage.setItem("week", JSON.stringify(week));  
+    }
+
+    // Read in queen data
+    const getData = function() {
+        let storedQueens = JSON.parse(localStorage.getItem("queensData"));   
+        let storedWeek = JSON.parse(localStorage.getItem("week"));   
+        
+        if (storedQueens) {
+            console.log(`queens.queens array retrieved from local storage`);
+            queens.queens = storedQueens;
+        }
+        if (storedWeek) {
+            console.log(`week retrieved from local storage`);
+            week = storedWeek;
+        }
+    }
+
+    return { saveData, getData };
+})();
+
 const images = {
     arrowLeft: "images/leftArrow.png",
     arrowRight: "images/rightArrow.png"
@@ -154,6 +180,8 @@ const display = (function () {
         resultsButton.textContent="See Results";
         resultsButton.id="see-results";
 
+        resultsButton.addEventListener("click", globalFunctions.saveData);
+
         resultsLink.appendChild(resultsButton);
         divs.navResults.appendChild(resultsLink);
     }
@@ -166,7 +194,7 @@ const display = (function () {
     }
 
     const challengeHeaders = function() {
-        const title  = competitionData.episodes[week-1];
+        const title  = `Episode ${week}: ${competitionData.episodes[week-1]}`;
         const lipSync = competitionData.lipSyncs[week-1];
         const synopsis = competitionData.synopses[week-1];
         const runway = competitionData.runways[week-1];
@@ -275,7 +303,7 @@ const display = (function () {
                 option.value = placementsArray[i];
                 select.appendChild(option);
             }
-        }
+        };
         
         select.id=id;
         div.append(select);
@@ -284,7 +312,7 @@ const display = (function () {
     const updatePlacementDropdownWeek = function() {
         if ((week===competitionData.numberOfWeeks && control.getPreviousWeek()!==competitionData.numberOfWeeks) 
             || (week!==competitionData.numberOfWeeks && control.getPreviousWeek()===competitionData.numberOfWeeks)) {
-            for (i=0; i < queens.numberOfQueens; i++) {
+            for (let i=0; i < queens.numberOfQueens; i++) {
                 const queenDropdown = document.getElementById(`queen-dropdown${i}`);
                 queenDropdown.remove();
 
@@ -470,11 +498,13 @@ const control = (function () {
         const resetButton = document.getElementById("reset-results");
 
         resetButton.addEventListener("click", function () {
-            for (i=0; i < queens.numberOfQueens; i++) {
+            for (let i = 0; i < queens.numberOfQueens; i++) {
                 queens.queens[i].placement = queens.queens[i].initialPlacement.slice();
 
                 display.updatePlacementDropdown();
             }
+
+            globalFunctions.saveData();
         });
     };
 
@@ -488,11 +518,4 @@ const control = (function () {
     return { getPreviousWeek, eventListeners, placementUpdateListener };
 })();
 
-// display.init();
-// display.weekUpdate();
-// control.eventListeners();
-
-// Probably ideally should split the queens object into data and functions so that the whole data object can be exported and won't cause issues by including the funcitons
-// export const queensArray = queens.queens;
-// export const numberOfQueens = queens.numberOfQueens;
-export {display, control, queens, competitionData};
+export {display, control, queens, competitionData, globalFunctions};
