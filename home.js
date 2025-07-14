@@ -1,14 +1,5 @@
 
-import {queens, competitionData, globalFunctions, currentStatus}  from "./script.js";
-
-// let week = currentStatus.getWeek();
-
-const divs = {
-    queens: document.getElementById("queens-div"),
-    nav: document.getElementById("nav-div"),
-    navResults: document.getElementById("nav-results"),
-    episodeInfo: document.getElementById("episode-info")
-}
+import {queens, competitionData, storage, currentStatus, universalDisplay}  from "./script.js";
 
 const images = {
     arrowLeft: "images/leftArrow.png",
@@ -34,8 +25,10 @@ const display = (function () {
         return {select}
     }
 
-    const displayArrows = function() {
-        divs.nav.innerHTML="";
+    const createArrows = function() {
+        const weeksNavDiv = document.createElement("div");
+        weeksNavDiv.id = "weeks-nav";
+        document.body.appendChild(weeksNavDiv);
 
         const leftArrow = document.createElement("input");
         leftArrow.type = "image";
@@ -53,12 +46,20 @@ const display = (function () {
 
         const dropdown = createWeeksDropdown ();
 
-        divs.nav.appendChild(leftArrow);
-        divs.nav.appendChild(dropdown.select);
-        divs.nav.appendChild(rightArrow);
+        weeksNavDiv.appendChild(leftArrow);
+        weeksNavDiv.appendChild(dropdown.select);
+        weeksNavDiv.appendChild(rightArrow);
     }
 
-    const displayResultsButton = function() {
+    const createResultsNavDiv = function() {
+        const navResults = document.createElement("div");
+        navResults.id = "nav-results";
+        document.body.appendChild(navResults);
+    }
+
+    const createResultsButton = function() {
+        const navResults = document.getElementById("nav-results");
+
         const resultsLink = document.createElement("a");
         resultsLink.href = "results.html";
 
@@ -66,26 +67,37 @@ const display = (function () {
         resultsButton.textContent="See Results";
         resultsButton.id="see-results";
 
-        resultsButton.addEventListener("click", globalFunctions.saveData);
+        resultsButton.addEventListener("click", storage.saveData);
 
         resultsLink.appendChild(resultsButton);
-        divs.navResults.appendChild(resultsLink);
+        navResults.appendChild(resultsLink);
     }
 
-    const displayResetButton = function() {
+    const createResetButton = function() {
+        const navResults = document.getElementById("nav-results");
+        
         const resetButton = document.createElement("button");
         resetButton.textContent="Reset Results";
         resetButton.id="reset-results";
-        divs.navResults.appendChild(resetButton);
+        
+        navResults.appendChild(resetButton);
     }
 
-    const challengeHeaders = function() {
+    const createEpisodeHeaders = function () {
+        const episodeInfo = document.createElement("div");
+        episodeInfo.id = "episode-info";
+        document.body.appendChild(episodeInfo);
+    }
+
+    const updateEpisodeHeaders = function() {
         const title  = `Episode ${currentStatus.week}: ${competitionData.episodes[currentStatus.week-1]}`;
         const lipSync = competitionData.lipSyncs[currentStatus.week-1];
         const synopsis = competitionData.synopses[currentStatus.week-1];
         const runway = competitionData.runways[currentStatus.week-1];
 
-        divs.episodeInfo.innerHTML = `
+        const episodeInfo = document.getElementById("episode-info");
+
+        episodeInfo.innerHTML = `
             <h2 id="episode-title">${title}</h2>
             <p id="synopsis">${synopsis}</p>
             ${runway ? `<p id="runway-theme"><b>Runway theme:</b> ${runway}</p>` : ""}
@@ -94,13 +106,18 @@ const display = (function () {
 
     const displayQueens = function() {
         const displayObjects = new Array(queens.numberOfQueens);
+        const queensDiv = document.createElement("div");
+        queensDiv.id="queens-div";
+        document.body.appendChild(queensDiv);
+
         for (let i = 0; i < queens.numberOfQueens; i++) {
             displayObjects[i]=document.createElement("div");
             displayObjects[i].id=`queen${i}`;
             displayObjects[i].innerHTML=`<div id="queen-image-box${i}"><img src=${queens.queens[i].img} class="queen-image" id="queen-image${i}"></div>
                                          <h3 class="queen-name">${queens.queens[i].queen}</h3>`;
 
-            divs.queens.appendChild(displayObjects[i]);
+            
+            queensDiv.appendChild(displayObjects[i]);
             const innerDiv = document.getElementById(`queen${i}`);
             createPlacementDropdown(innerDiv, `queen-dropdown${i}`);
         }
@@ -231,22 +248,25 @@ const display = (function () {
     }
 
     const init = function() {
+        universalDisplay.createHeading();
+        createEpisodeHeaders();
         displayQueens();
         createReturningButton();
-        displayArrows();
-        displayResultsButton();
-        displayResetButton();
+        createArrows();
+        createResultsNavDiv();
+        createResultsButton();
+        createResetButton();
     }
 
     const weekUpdate = function() {
-        console.log(currentStatus.week);
+        console.log(`control.weekUpdate: Display updated for ${currentStatus.week}`);
         document.getElementById("left-arrow").style.display = currentStatus.week > 1 ? "inline-block" : "none";
         document.getElementById("right-arrow").style.display = currentStatus.week < competitionData.numberOfWeeks ? "inline-block" : "none";
 
         const weekDropdown = document.getElementById("week-select");
         weekDropdown.value = currentStatus.week.toString();
 
-        challengeHeaders();
+        updateEpisodeHeaders();
         updatePlacementDropdownWeek();
         updatePlacementDropdown();
     }
@@ -256,32 +276,37 @@ const display = (function () {
 
 
 const control = (function () {
-    let previousWeek=currentStatus.getWeek();
+    let previousWeek=currentStatus.week;
 
     const arrowListeners = function () {
+        const leftArrow = document.getElementById("left-arrow");
+        const rightArrow = document.getElementById("right-arrow");
 
-        divs.nav.addEventListener("click", function (e) {
-            if (e.target.id === "left-arrow" && currentStatus.week > 1) {
-                previousWeek=currentStatus.week;
-                currentStatus.week--;
-                display.weekUpdate(currentStatus.week);
-            } else if (e.target.id === "right-arrow" && currentStatus.week < competitionData.numberOfWeeks) {
-                console.log(`currentStatus.week=${currentStatus.week}`);
-                previousWeek=currentStatus.week;
-                currentStatus.currentStatus.week++;
-                console.log(`currentStatus.week++=${currentStatus.week}`);
-                display.weekUpdate(currentStatus.week);
-            }
+        leftArrow.addEventListener("click", function (e) {
+            previousWeek=currentStatus.week;
+            currentStatus.week--;
+            console.log(`control.arrowListeners: Week decreased to ${currentStatus.week}`);
+            display.weekUpdate();
         });
 
-        divs.nav.addEventListener("change", function (e) {
+        rightArrow.addEventListener("click", function (e) {
+            previousWeek=currentStatus.week;
+            currentStatus.week++;
+            console.log(`control.arrowListeners: Week increased to ${currentStatus.week}`);
+            display.weekUpdate();
+        });
+
+        const weekSelect = document.getElementById("week-select");
+
+        weekSelect.addEventListener("change", function (e) {
             if (e.target.id === "week-select") {
                 previousWeek=currentStatus.week;
                 currentStatus.week = parseInt(e.target.value);
+                console.log(`arrowListeners: Week updated to ${currentStatus.week}`);
                 display.weekUpdate(currentStatus.week);
             }
         });
-    }
+    };
 
     const getPreviousWeek = function() {
         return previousWeek;
@@ -391,10 +416,10 @@ const control = (function () {
             for (let i = 0; i < queens.numberOfQueens; i++) {
                 queens.queens[i].placement = queens.queens[i].initialPlacement.slice();
 
-                display.updatePlacementDropdown(currentPlacement.week);
+                display.updatePlacementDropdown();
             }
 
-            globalFunctions.saveData();
+            storage.saveData();
         });
     };
 
@@ -408,8 +433,7 @@ const control = (function () {
     return { getPreviousWeek, eventListeners, placementUpdateListener };
 })();
 
-globalFunctions.getData();
-// week = currentStatus.getWeek();
+storage.getData();
 display.init();
 display.weekUpdate();
 control.eventListeners();

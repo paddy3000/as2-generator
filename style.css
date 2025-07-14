@@ -111,7 +111,7 @@ input[type=radio] {
     text-align: center;
 }
 
-#nav-div {
+#weeks-nav {
     display: flex;
     justify-content: center;
     align-items: center;

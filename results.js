@@ -1,4 +1,4 @@
-import { queens, competitionData, globalFunctions} from "./script.js";
+import { queens, competitionData, storage, universalDisplay} from "./script.js";
 
 const displayGeneric = (function() {
     const createHeaders = function() {
@@ -10,7 +10,7 @@ const displayGeneric = (function() {
 
         subheadingDiv.appendChild(subheading);
         document.body.appendChild(subheadingDiv);
-        console.log("subheading")
+        console.log("displayGeneric.createHeaders: Subheading created");
     };
 
     const createHomeButton = function() {
@@ -219,7 +219,8 @@ const displayProgress = (function () {
     return {createTable};
 })();
 
-globalFunctions.getData();
+storage.getData();
+universalDisplay.createHeading();
 displayGeneric.createHeaders();
 displayProgress.createTable();
 displayGeneric.createHomeButton();

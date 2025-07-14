@@ -1,18 +1,6 @@
-// const currentStatus = {
-//     week: 1,
-//     getWeek: function () {return week}
-// };
-
-const currentStatus = (function () {
-    let week = 1;
-
-    const getWeek = function () {
-        console.log(`currentStatus.getWeek returned ${week}`);
-        return week;
-    };
-
-    return {week, getWeek};
-})();
+const currentStatus = {
+    week: 1
+}
 
 const competitionData = {
     numberOfWeeks: 8,
@@ -106,30 +94,45 @@ const queens = (function () {
     return {queens, numberOfQueens};
 })();
 
-const globalFunctions = (function() {
+const storage = (function() {
     // Save data
     const saveData = function() {
-        console.log(`queens.queens array and currentStatus.week saved to local storage`);
+        console.log(`storage.saveData: queens.queens array and currentStatus.week saved to local storage`);
         localStorage.setItem("queensData", JSON.stringify(queens.queens));  
-        localStorage.setItem("currentStatus.week", JSON.stringify(week));  
+        localStorage.setItem("currentStatus.week", JSON.stringify(currentStatus.week));  
     }
 
     // Read in queen data
     const getData = function() {
         let storedQueens = JSON.parse(localStorage.getItem("queensData"));   
-        let storedWeek = JSON.parse(localStorage.getItem("week"));   
+        let storedWeek = JSON.parse(localStorage.getItem("currentStatus.week"));   
         
         if (storedQueens) {
-            console.log(`queens.queens array retrieved from local storage`);
+            console.log(`storage.getData: queens.queens array retrieved from local storage`);
             queens.queens = storedQueens;
         }
         if (storedWeek) {
-            console.log(`currentStatus.week retrieved from local storage`);
             currentStatus.week = storedWeek;
+            console.log(`storage.getData: currentStatus.week ${currentStatus.week} retrieved from local storage`);
         }
     }
 
     return { saveData, getData };
 })();
 
-export {queens, competitionData, globalFunctions, currentStatus};
+const universalDisplay = (function() {
+    const createHeading = function() {
+        const headingDiv = document.createElement("div");
+        headingDiv.id = "main-heading";
+
+        const heading = document.createElement("h1");
+        heading.textContent = "All Stars 2 Derigger";
+
+        headingDiv.appendChild(heading);
+        document.body.appendChild(headingDiv);
+    }
+
+    return { createHeading };
+})();
+
+export {queens, competitionData, storage, currentStatus, universalDisplay};
