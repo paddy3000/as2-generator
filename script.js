@@ -94,6 +94,12 @@ const queens = (function () {
     return {queens, numberOfQueens};
 })();
 
+const images = {
+    arrowLeft: "images/leftArrow.png",
+    arrowRight: "images/rightArrow.png",
+    settings: "images/settings.png"
+}
+
 const storage = (function() {
     // Save data
     const saveData = function() {
@@ -135,13 +141,23 @@ const universalDisplay = (function() {
         // Create main heading
         const heading = document.createElement("h1");
         heading.textContent = "All Stars 2 Derigger";
-        leftDiv.appendChild(heading);
+
+        // Create setting button
+        const settings = document.createElement("button");
+        settings.id = "settings-button";
+        const settingsImg = document.createElement("img");
+        settingsImg.src = images.settings;
+        settings.appendChild(settingsImg);
 
         // Create info button
         const info = document.createElement("button");
         info.id = "info-button";
-        info.innerText = "info";
+        info.innerText = "i";
+
+        leftDiv.appendChild(heading);
+
         rightDiv.appendChild(info);
+        rightDiv.appendChild(settings);
 
         headingDiv.appendChild(leftDiv);
         headingDiv.appendChild(rightDiv);
@@ -157,4 +173,5 @@ const universalDisplay = (function() {
     return { createHeading, createNavDiv };
 })();
 
-export {queens, competitionData, storage, currentStatus, universalDisplay};
+
+export {queens, competitionData, storage, currentStatus, universalDisplay, images};

@@ -4,6 +4,7 @@ const displayGeneric = (function() {
     const createHeaders = function() {
         const subheadingDiv = document.createElement("div");
         subheadingDiv.id = "results-subheading";
+        subheadingDiv.className = "subheading-div";
 
         const subheading = document.createElement("h2");
         subheading.textContent = "Contestant Progress"
@@ -26,7 +27,7 @@ const displayGeneric = (function() {
 
         homeLink.appendChild(resultsButton);
         navDiv.appendChild(homeLink);
-        document.body.appendChild(resultsNavDiv);
+        document.body.appendChild(navDiv);
     };
 
     return { createHeaders, createHomeButton };

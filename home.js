@@ -1,11 +1,5 @@
 
-import {queens, competitionData, storage, currentStatus, universalDisplay}  from "./script.js";
-
-const images = {
-    arrowLeft: "images/leftArrow.png",
-    arrowRight: "images/rightArrow.png"
-}
-
+import {queens, competitionData, storage, currentStatus, universalDisplay, images}  from "./script.js";
 
 const display = (function () {
     const createWeeksDropdown = function() {
@@ -88,6 +82,7 @@ const display = (function () {
     const createEpisodeHeaders = function () {
         const episodeInfo = document.createElement("div");
         episodeInfo.id = "episode-info";
+        episodeInfo.className = "subheading-div";
         document.body.appendChild(episodeInfo);
     }
 
@@ -210,6 +205,8 @@ const display = (function () {
             }
         };
         
+        console.log(`display.createPlacementDropdown: Dropdown ${id} created`);
+
         select.id=id;
         div.append(select);
     }
@@ -223,6 +220,7 @@ const display = (function () {
 
                 const innerDiv = document.getElementById(`queen${i}`);
                 createPlacementDropdown(innerDiv, `queen-dropdown${i}`);
+                console.log(`display.createPlacementDropdown: Dropdown created for ${queens.queens[i].queen}`);
             };
             // Add event listener back to dropdown
             control.placementUpdateListener();
@@ -262,7 +260,7 @@ const display = (function () {
     }
 
     const weekUpdate = function() {
-        console.log(`control.weekUpdate: Display updated for ${currentStatus.week}`);
+        console.log(`control.weekUpdate: Display updated for week ${currentStatus.week}`);
         document.getElementById("left-arrow").style.display = currentStatus.week > 1 ? "inline-block" : "none";
         document.getElementById("right-arrow").style.display = currentStatus.week < competitionData.numberOfWeeks ? "inline-block" : "none";
 
@@ -333,6 +331,8 @@ const control = (function () {
                 // Dropdown is set to Eliminated or Quit in the current week then set eliminated to true
                 eliminated = isEliminated(dropdownValue);
                 queens.queens[i].placement[currentStatus.week - 1] = dropdownValue;
+
+                console.log(`control.placementUpdateListener: Function ran, week: ${currentStatus.week}, queen: ${queens.queens[i].queen}, placement: ${dropdownValue}`);
 
                 // Cycle through the subsequent weeks
                 for (let j = currentStatus.week; j < competitionData.numberOfWeeks; j++) {

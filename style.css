@@ -46,16 +46,53 @@ h2 {
     width: 100w;
 }
 
-#nav-div {
+
+.subheading-div {
     background-color: var(--lighter-accent);
-    padding:  0;
 }
 
-#info-button {
-    border-radius: 4rem;
-    font-size: 1.5rem;
-    height: 3rem;
-    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+#nav-div {
+    background-color: var(--lighter-accent);
+    border-top: 0.2rem var(--dark-accent) solid;
+    padding:  0;
+    padding: 1rem 0;
+}
+
+#main-heading-right {
+    display: flex;
+}
+
+#main-heading > #main-heading-right > button {
+    border-radius: 5rem;
+    border: 0.2rem solid black;
+    box-shadow: -0.2rem 0.2rem var(--dark-accent);
+    font-size: 2.5rem;
+    /* height: 3rem; */
+    height: auto;
+    aspect-ratio: 1 / 1;
+    font-family: monospace;
+    font-weight: bold;
+    margin-left: 0.6rem;
+    justify-content: center;
+    align-items: center;
+}
+
+#settings-button > img {
+    height: 2.3rem;
+    width: auto;
+}
+
+#settings-button {
+    height: auto;
+    aspect-ratio: 1 / 1;
+    padding: 0.4rem 0.6rem;
+    display: flex;
+}
+
+#nav-div button {
+    border: 0.15rem solid black;
+    font-weight: bold;
+    
 }
 
 h3 {
@@ -63,12 +100,12 @@ h3 {
 }
 
 #episode-info {
-    height: 13rem;
-    background-color: var(--lighter-accent);
+    height: 15rem;
     width: 100w;
     display: flex;
     flex-direction: column;
 }
+
 
 #synopsis {
     font-style: italic;
@@ -160,7 +197,7 @@ input[type=radio] {
     justify-content: center;
     align-items: center;
     gap: 1.5rem;
-    padding: 2rem 0 1.5rem 0;
+    padding-bottom: 1.5rem;
 }
 
 #nav-results {
@@ -168,7 +205,7 @@ input[type=radio] {
     justify-content: center;
     align-items: center;
     gap: 1.5rem;
-    padding: 1rem;
+    padding-top: 1rem;
 }
 
 select, button {
@@ -180,7 +217,7 @@ select, button {
 }
 
 select#week-select {
-    border: rgba(50,17,35,255) 0.2rem solid;
+    border: rgba(50,17,35,255) 0.15rem solid;
     /* background-color: var(--light-accent); */
     color: var(--dark-accent);
     font-weight: bold;
@@ -192,6 +229,7 @@ select#week-select {
     display: flex;
     justify-content: center;
     border-collapse: collapse;
+    padding: 3rem 0;
 }
 
 td, th {
@@ -275,12 +313,4 @@ th.queen-name {
 
 #results-table td.result.finale-cell.elim {
     background-color: var(--elimfinale-color);
-}
-
-#results-nav-div {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1.5rem;
-    margin: 1rem;
 }
