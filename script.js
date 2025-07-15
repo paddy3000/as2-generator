@@ -97,7 +97,8 @@ const queens = (function () {
 const images = {
     arrowLeft: "images/leftArrow.png",
     arrowRight: "images/rightArrow.png",
-    settings: "images/settings.png"
+    settings: "images/settings.png",
+    close: "images/close.png"
 }
 
 const storage = (function() {
@@ -125,6 +126,46 @@ const storage = (function() {
 
     return { saveData, getData };
 })();
+
+const createInfoBox = function() {
+    const infoDiv = document.createElement("div");
+    infoDiv.id = "info-div";
+
+    const headerDiv = document.createElement("div");
+    headerDiv.id = "info-header-div";
+
+
+    const header = document.createElement("h3");
+    header.innerText = "Info";
+    headerDiv.appendChild(header);
+
+    const closeButton = document.createElement("button");
+    closeButton.id = "info-close-button";
+    const closeImage = document.createElement("img");
+    closeImage.src = images.close;
+    closeButton.appendChild(closeImage);
+    headerDiv.appendChild(closeButton);
+
+    infoDiv.appendChild(headerDiv);
+
+    const addParagraph = function(innerText) {
+        const paragraph = document.createElement("p");
+        paragraph.innerText = innerText;
+        infoDiv.appendChild(paragraph);
+    };
+
+    addParagraph("Welcome to the RuPaul's Drag Race All Stars 2 fantasy generator");
+    addParagraph("Use the arrows to move through the weeks and reassign placements for the queens to change the outcome of the competition");
+    addParagraph(`Answer questions like "What if Adore had never quit?", "What if this season was non-elimination", and "What if Roxxxy had never leant Alaska that rhinestone tank top?"`);
+    addParagraph(`To see the results summary press "See Results"`);
+    addParagraph(`To reset the results back to the original placements from the competition press "Reset Results"`);
+
+    infoDiv.style.display = "none";
+    
+    document.body.appendChild(infoDiv);
+
+    universalControl.infoCloseListener();
+}
 
 const universalDisplay = (function() {
     const createHeading = function() {
@@ -162,6 +203,9 @@ const universalDisplay = (function() {
         headingDiv.appendChild(leftDiv);
         headingDiv.appendChild(rightDiv);
         document.body.appendChild(headingDiv);
+
+        createInfoBox();
+        universalControl.infoButtonListener();
     }
 
     const createNavDiv = function() {
@@ -170,8 +214,25 @@ const universalDisplay = (function() {
         document.body.appendChild(navDiv);
     }
 
-    return { createHeading, createNavDiv };
+    return { createHeading, createNavDiv, createInfoBox };
 })();
 
+const universalControl = (function () {
+    const infoCloseListener = function () {
+        const infoCloseButton = document.getElementById("info-close-button");
+        const infoDiv = document.getElementById("info-div");
+
+        infoCloseButton.addEventListener("click", function() {infoDiv.style.display = "none"})
+    };
+
+    const infoButtonListener = function () {
+        const infoButton = document.getElementById("info-button");
+        const infoDiv = document.getElementById("info-div");
+
+        infoButton.addEventListener("click", function() {infoDiv.style.display = "block"})
+    };
+
+    return {infoCloseListener, infoButtonListener};
+})()
 
 export {queens, competitionData, storage, currentStatus, universalDisplay, images};

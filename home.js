@@ -220,7 +220,6 @@ const display = (function () {
 
                 const innerDiv = document.getElementById(`queen${i}`);
                 createPlacementDropdown(innerDiv, `queen-dropdown${i}`);
-                console.log(`display.createPlacementDropdown: Dropdown created for ${queens.queens[i].queen}`);
             };
             // Add event listener back to dropdown
             control.placementUpdateListener();

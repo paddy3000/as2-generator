@@ -92,7 +92,6 @@ h2 {
 #nav-div button {
     border: 0.15rem solid black;
     font-weight: bold;
-    
 }
 
 h3 {
@@ -104,11 +103,46 @@ h3 {
     width: 100w;
     display: flex;
     flex-direction: column;
+    /* box-shadow: 0 0.5rem 1rem var(--lighter-accent); */
 }
 
 
 #synopsis {
     font-style: italic;
+}
+
+#info-div {
+    width: 50vw;
+    border: 0.5rem solid var(--dark-accent);
+    padding: 1rem 3rem;
+    background-color: var(--light-accent);
+    position: fixed;
+    translate: 40% 50%;
+    z-index: 999;
+    border-radius: 1rem;
+}
+
+#info-close-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2rem;
+    border: 0.2rem solid black;
+    box-shadow: -0.15rem 0.15rem var(--dark-accent);
+    font-size: 1rem;
+    aspect-ratio: 1 / 1;
+    padding: 0.3rem;
+    /* height: auto; */
+    margin-left: 0.6rem;
+    justify-self: flex-end;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+
+#info-close-button img {
+    aspect-ratio: 1 / 1;
+    height: 1rem;
 }
 
 #queens-div {
