@@ -21,6 +21,16 @@ const competitionData = {
     finalePlacements: ["Winner", "Runner Up", "Eliminated", "Out"]
 };
 
+const points = {
+    win: 6,
+    top2: 5,
+    high: 4,
+    safe: 3,
+    low: 2,
+    bottom: 1,
+    elim: 0
+}
+
 const queens = (function () {
     const queen0 = {
         queen: "Adore Delano",
@@ -104,28 +114,52 @@ const images = {
 const storage = (function() {
     // Save data
     const saveData = function() {
-        console.log(`storage.saveData: queens.queens array and currentStatus.week saved to local storage`);
         localStorage.setItem("queensData", JSON.stringify(queens.queens));  
         localStorage.setItem("currentStatus.week", JSON.stringify(currentStatus.week));  
+        console.log(`storage.saveData: queens.queens array and currentStatus.week saved to local storage`);
+    }
+
+    const savePoints = function () {
+        localStorage.setItem("points", JSON.stringify(points));
+        console.log(`storage.saveData: points saved to local storage`);
     }
 
     // Read in queen data
     const getData = function() {
         let storedQueens = JSON.parse(localStorage.getItem("queensData"));   
-        let storedWeek = JSON.parse(localStorage.getItem("currentStatus.week"));   
+        let storedWeek = JSON.parse(localStorage.getItem("currentStatus.week"));
+        let storedPoints = JSON.parse(localStorage.getItem("points"));   
         
         if (storedQueens) {
             console.log(`storage.getData: queens.queens array retrieved from local storage`);
             queens.queens = storedQueens;
         }
+
         if (storedWeek) {
             currentStatus.week = storedWeek;
             console.log(`storage.getData: currentStatus.week ${currentStatus.week} retrieved from local storage`);
         }
+
+        if (storedPoints) {
+            points = storedPoints;
+            console.log(`storage.getData: points retrieved from local storage`);
+        }
     }
 
-    return { saveData, getData };
+    return { saveData, savePoints, getData };
 })();
+
+const createCloseButton = function(id) {
+    const closeButton = document.createElement("button");
+    closeButton.id = id;
+    closeButton.className = "close-button";
+    const closeImage = document.createElement("img");
+    closeImage.src = images.close;
+    closeImage.className = "close-button-image";
+    closeButton.appendChild(closeImage);
+
+    return closeButton;
+}
 
 const createInfoBox = function() {
     const infoDiv = document.createElement("div");
@@ -139,11 +173,8 @@ const createInfoBox = function() {
     header.innerText = "Info";
     headerDiv.appendChild(header);
 
-    const closeButton = document.createElement("button");
-    closeButton.id = "info-close-button";
-    const closeImage = document.createElement("img");
-    closeImage.src = images.close;
-    closeButton.appendChild(closeImage);
+    const closeButton = createCloseButton("info-close-button");
+
     headerDiv.appendChild(closeButton);
 
     infoDiv.appendChild(headerDiv);
@@ -165,6 +196,75 @@ const createInfoBox = function() {
     document.body.appendChild(infoDiv);
 
     universalControl.infoCloseListener();
+}
+
+const createSettingsBox = function() {
+    const settingsDiv = document.createElement("div");
+    settingsDiv.id = "settings-div";
+
+    const headerDiv = document.createElement("div");
+    headerDiv.id = "settings-header-div";
+
+
+    const header = document.createElement("h3");
+    header.innerText = "Settings";
+    headerDiv.appendChild(header);
+
+    const closeButton = createCloseButton("settings-close-button");
+
+    headerDiv.appendChild(closeButton);
+
+    const settingsForm = document.createElement("form");
+    settingsForm.id = "settings-form";
+
+    const fieldSet = document.createElement("fieldset");
+    fieldSet.id = "points-fieldset";
+
+    const legend = document.createElement("legend");
+    legend.innerText = "Points per placement";
+
+    fieldSet.appendChild(legend);
+
+
+    const addInput = function(id, text, points) {
+        const div = document.createElement("div");
+        div.className = "settings-input";
+
+        const label = document.createElement("label");
+        label.for = id;
+        label.innerText = text;
+
+        const input = document.createElement("input");
+        input.type = "number";
+        input.label = id;
+        input.id = id; 
+        input.value = points;
+
+        div.appendChild(label);
+        div.appendChild(input);
+        fieldSet.appendChild(div);
+    };
+    
+    addInput("win", "Win", points.win);
+    addInput("top2", "Top 2", points.top2);
+    addInput("high", "High", points.high);
+    addInput("safe", "Safe", points.safe);
+    addInput("low", "Low", points.low);
+    addInput("bottom", "Bottom", points.bottom);
+    addInput("elim", "Eliminated", points.elim);
+
+    const button = document.createElement("button");
+    button.type = "submit";
+    button.innerText = "Save";
+    settingsDiv.style.display = "none";
+    
+    settingsDiv.appendChild(headerDiv);
+    settingsForm.appendChild(fieldSet);
+    settingsForm.appendChild(button);
+    settingsDiv.appendChild(settingsForm);
+    document.body.appendChild(settingsDiv);
+
+    universalControl.settingsCloseListener();
 }
 
 const universalDisplay = (function() {
@@ -205,7 +305,9 @@ const universalDisplay = (function() {
         document.body.appendChild(headingDiv);
 
         createInfoBox();
+        createSettingsBox();
         universalControl.infoButtonListener();
+        universalControl.settingsButtonListener();
     }
 
     const createNavDiv = function() {
@@ -218,21 +320,58 @@ const universalDisplay = (function() {
 })();
 
 const universalControl = (function () {
+    const popUpStatus = {
+        infoOpen: false,
+        settingsOpen: false
+    }
+
     const infoCloseListener = function () {
         const infoCloseButton = document.getElementById("info-close-button");
         const infoDiv = document.getElementById("info-div");
 
-        infoCloseButton.addEventListener("click", function() {infoDiv.style.display = "none"})
+        infoCloseButton.addEventListener("click", function() {
+            infoDiv.style.display = "none";
+            popUpStatus.infoOpen = false;
+        })
+    };
+
+    const settingsCloseListener = function () {
+        const settingsCloseButton = document.getElementById("settings-close-button");
+        const settingsDiv = document.getElementById("settings-div");
+
+        settingsCloseButton.addEventListener("click", function() {
+            settingsDiv.style.display = "none";
+            popUpStatus.settingsOpen = false;
+        })
     };
 
     const infoButtonListener = function () {
         const infoButton = document.getElementById("info-button");
+        const settingsButton = document.getElementById("settings-button");
         const infoDiv = document.getElementById("info-div");
 
-        infoButton.addEventListener("click", function() {infoDiv.style.display = "block"})
+        infoButton.addEventListener("click", function() {
+            if (popUpStatus.settingsOpen===false) {
+                infoDiv.style.display = "block";
+                popUpStatus.infoOpen = true;
+            }
+        });
     };
 
-    return {infoCloseListener, infoButtonListener};
+    const settingsButtonListener = function () {
+        const infoButton = document.getElementById("info-button");
+        const settingsButton = document.getElementById("settings-button");
+        const settingsDiv = document.getElementById("settings-div");
+
+        settingsButton.addEventListener("click", function() {
+            if (popUpStatus.infoOpen===false) {
+                settingsDiv.style.display = "block";
+                popUpStatus.settingsOpen = true;
+            }
+        });
+    };
+
+    return {infoCloseListener, infoButtonListener, settingsCloseListener, settingsButtonListener};
 })()
 
-export {queens, competitionData, storage, currentStatus, universalDisplay, images};
+export {queens, competitionData, storage, currentStatus, universalDisplay, images, points};
