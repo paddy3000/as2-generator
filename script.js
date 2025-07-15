@@ -281,7 +281,7 @@ const universalDisplay = (function() {
 
         // Create main heading
         const heading = document.createElement("h1");
-        heading.textContent = "All Stars 2 Derigger";
+        heading.textContent = "All Stars 2 Simulator";
 
         // Create setting button
         const settings = document.createElement("button");

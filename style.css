@@ -12,6 +12,12 @@
     --winner-color: rgb(255, 255, 0);
     --runnerup-color: rgb(192, 192, 192);
     --elimfinale-color: rgb(223, 143, 107);
+
+    --white-colour: #F7F4EB;
+    /* --dark-accent: #431C52;
+    --light-accent: #BECCE8;
+    --lighter-accent: #E6E0EC; */
+
     --light-accent: rgba(234,195,217,255);
     --lighter-accent: rgb(224, 212, 219);
     --dark-accent: rgba(50,17,35,255);
@@ -22,8 +28,17 @@ body {
     text-align: center;
     box-sizing: border-box;
     padding: 0;
-    padding-top: 75px;
+    padding-top: 100px;
     margin: 0;
+    background-color: var(--white-colour);
+}
+
+h1 {
+    /* box-shadow: -0.3rem 0.3rem black; */
+    border: 0.2rem solid var(--dark-accent);
+    background: white;
+    border-radius: 3rem;
+    padding: 0.3rem 1rem;
 }
 
 h2 {
