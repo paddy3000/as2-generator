@@ -128,8 +128,12 @@ button:hover {
 }
 
 #settings-button > img,
-#feedback-button > img {
+#feedback-button  img {
     height: 2.3rem;
+}
+
+#feedback-button > a {
+    display: flex;
 }
 
 #settings-button {

@@ -316,18 +316,24 @@ const universalDisplay = (function() {
         info.innerText = "i";
 
         // Create feedback button
-        const feedback = document.createElement("button");
-        feedback.id = "feedback-button";
+        const feedbackButton = document.createElement("button");
+        feedbackButton.id = "feedback-button";
+
+        const feedbackLink = document.createElement("a");
+        feedbackLink.href = "feedback.html";
+
         const feedbackImg = document.createElement("img");
         feedbackImg.src = images.feedback;
         feedbackImg.alt = "Feedback";
-        feedback.appendChild(feedbackImg);
+        
+        feedbackButton.appendChild(feedbackLink);
+        feedbackLink.appendChild(feedbackImg);
 
         leftDiv.appendChild(heading);
 
         rightDiv.appendChild(info);
         rightDiv.appendChild(settings);
-        rightDiv.appendChild(feedback);
+        rightDiv.appendChild(feedbackButton);
 
         headingDiv.appendChild(leftDiv);
         headingDiv.appendChild(rightDiv);
