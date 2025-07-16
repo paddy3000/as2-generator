@@ -109,6 +109,10 @@ const displayProgress = (function () {
     }
 
     const createTable = function () {
+        // Create div
+        const resultsTable = document.createElement("div");
+        resultsTable.id = "results-table-div";
+
         // Create empty table elements
         const tbl = document.createElement("table");
         tbl.id = "results-table";
@@ -203,12 +207,18 @@ const displayProgress = (function () {
             tblBody.appendChild(row);
         }
 
-        // Reset HTML and add complete table
-        const resultsTable = document.createElement("div");
-        resultsTable.id = "results-table-div";
+        // Add caption
+        const tfoot = document.createElement("tfoot");
+        const tfootTr = document.createElement("tr");
+        const tfootTrTd = document.createElement("td");
+        tfootTrTd.colSpan=queens.numberOfQueens+2;
+        tfootTrTd.innerText = "To see points used in PPE calculation, open Settings in the top right corner";
+        tfootTr.appendChild(tfootTrTd);
+        tfoot.appendChild(tfootTr);
 
         tbl.appendChild(tblHeader);
         tbl.appendChild(tblBody);
+        tbl.appendChild(tfoot);
         resultsTable.appendChild(tbl);
         document.body.appendChild(resultsTable);
     };

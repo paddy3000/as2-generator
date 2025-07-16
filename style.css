@@ -422,3 +422,8 @@ th.queen-name {
 #results-table td.result.finale-cell.elim {
     background-color: var(--elimfinale-color);
 }
+
+tfoot {
+    font-size: 1.3rem;
+    font-style: italic;    
+}
