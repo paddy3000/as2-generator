@@ -362,7 +362,7 @@ const control = (function () {
                         };
                         // If queen was eliminated by this point then set to Safe
                         if (queens.queens[i].placement[j]==="Out" && initialPlacement==="Out") {
-                            queens.queens[i].placement[j] = j<competitionData.numberOfWeeks-1 ? "Safe" : "Runner Up";
+                            queens.queens[i].placement[j] = j < competitionData.numberOfWeeks-1 ? "Safe" : "Runner Up";
                         };
 
                         // Set returns back to false since in the competition
@@ -381,12 +381,14 @@ const control = (function () {
             // const placementAtWeek = queen.placement[currentStatus.week-1];
             const placementAtNext = currentStatus.week<competitionData.numberOfWeeks ? queen.placement[currentStatus.week] : null;
             const returningAtNext = currentStatus.week<competitionData.numberOfWeeks ? queen.return[currentStatus.week] : null;
-
             
             if (returning==="Yes") {
                 for (let j = currentStatus.week-1; j < competitionData.numberOfWeeks; j++) {
                     queen.return[j] = j===currentStatus.week-1 ? true : queen.initialReturn[j];
-                    queen.placement[j] = queen.initialPlacement[j]==="Out" ? "Safe" :  queen.initialPlacement[j];
+                    if (queen.initialPlacement[j]==="Out") {
+                        queen.placement[j] = j < competitionData.numberOfWeeks-1 ? "Safe" : "Runner Up";
+                    } else
+                    {queen.placement[j] = queen.initialPlacement[j]};
                 };
             } else if (returning==="No") {
                 for (let j = currentStatus.week-1; j < competitionData.numberOfWeeks; j++) {
