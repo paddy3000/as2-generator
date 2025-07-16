@@ -18,18 +18,22 @@ const competitionData = {
     runways: [null, "Latex Eleganza", "The Future of Drag", "Two Looks in One", null, "Pants on the Runway", "Makeover Challenge", "Final Eleganza"],
     competitiveEpisode: [true, true, true, true, true, true, true, false],
     placements: ["Win", "Top 2", "High", "Safe", "Low", "Bottom", "Eliminated", "Out", "Quit"],
-    finalePlacements: ["Winner", "Runner Up", "Eliminated", "Out"]
+    finalePlacements: ["Winner", "Runner Up", "Eliminated", "Out"],
 };
 
-const points = {
-    win: 6,
-    top2: 5,
-    high: 4,
-    safe: 3,
-    low: 2,
-    bottom: 1,
-    elim: 0
-}
+const points = (function () {
+    const points =  [{id: "win",    value: 6},
+                     {id: "top2",   value: 5},
+                     {id: "high",   value: 4},
+                     {id: "safe",   value: 3},
+                     {id: "low",    value: 2},
+                     {id: "bottom", value: 1},
+                     {id: "elim",   value: 0}];
+
+    const initialPoints = points.slice();
+
+    return {points, initialPoints};
+})();
 
 const queens = (function () {
     const queen0 = {
@@ -120,7 +124,7 @@ const storage = (function() {
     }
 
     const savePoints = function () {
-        localStorage.setItem("points", JSON.stringify(points));
+        localStorage.setItem("points", JSON.stringify(points.points));
         console.log(`storage.saveData: points saved to local storage`);
     }
 
@@ -141,7 +145,7 @@ const storage = (function() {
         }
 
         if (storedPoints) {
-            points = storedPoints;
+            points.points = storedPoints;
             console.log(`storage.getData: points retrieved from local storage`);
         }
     }
@@ -226,45 +230,54 @@ const createSettingsBox = function() {
     fieldSet.appendChild(legend);
 
 
-    const addInput = function(id, text, points) {
+    const addInput = function(id, text) {
         const div = document.createElement("div");
         div.className = "settings-input";
 
         const label = document.createElement("label");
-        label.for = id;
+        label.for = `points-settings-${id}`;
         label.innerText = text;
 
         const input = document.createElement("input");
         input.type = "number";
         input.label = id;
-        input.id = id; 
-        input.value = points;
+        input.id = `points-settings-${id}`; 
+        input.value = points.points.find(a => a.id === id).value;
 
         div.appendChild(label);
         div.appendChild(input);
         fieldSet.appendChild(div);
     };
     
-    addInput("win", "Win", points.win);
-    addInput("top2", "Top 2", points.top2);
-    addInput("high", "High", points.high);
-    addInput("safe", "Safe", points.safe);
-    addInput("low", "Low", points.low);
-    addInput("bottom", "Bottom", points.bottom);
-    addInput("elim", "Eliminated", points.elim);
+    addInput("win", "Win");
+    addInput("top2", "Top 2");
+    addInput("high", "High");
+    addInput("safe", "Safe");
+    addInput("low", "Low");
+    addInput("bottom", "Bottom");
+    addInput("elim", "Eliminated");
 
-    const button = document.createElement("button");
-    button.type = "submit";
-    button.innerText = "Save";
-    settingsDiv.style.display = "none";
+    const saveButton = document.createElement("button");
+    saveButton.type = "submit";
+    saveButton.innerText = "Save";
+    saveButton.id = "settings-save-button";
+
+    const resetButton = document.createElement("button");
+    resetButton.innerText = "Reset Points";
+    resetButton.id = "settings-reset-button";
     
     settingsDiv.appendChild(headerDiv);
     settingsForm.appendChild(fieldSet);
-    settingsForm.appendChild(button);
+    settingsForm.appendChild(resetButton);
+    settingsForm.appendChild(saveButton);
     settingsDiv.appendChild(settingsForm);
     document.body.appendChild(settingsDiv);
 
+    settingsDiv.style.display = "none";
+
     universalControl.settingsCloseListener();
+    universalControl.settingsResetListener();
+    universalControl.settingsSaveListener();
 }
 
 const universalDisplay = (function() {
@@ -325,53 +338,95 @@ const universalControl = (function () {
         settingsOpen: false
     }
 
+    const infoClose = function () {
+        const infoDiv = document.getElementById("info-div");
+        infoDiv.style.display = "none";
+        popUpStatus.infoOpen = false;
+    }
+
+    const settingsClose = function () {
+        const settingsDiv = document.getElementById("settings-div");
+        settingsDiv.style.display = "none";
+        popUpStatus.settingsOpen = false;
+    }
+
     const infoCloseListener = function () {
         const infoCloseButton = document.getElementById("info-close-button");
-        const infoDiv = document.getElementById("info-div");
 
-        infoCloseButton.addEventListener("click", function() {
-            infoDiv.style.display = "none";
-            popUpStatus.infoOpen = false;
-        })
+        infoCloseButton.addEventListener("click", infoClose)
     };
 
     const settingsCloseListener = function () {
         const settingsCloseButton = document.getElementById("settings-close-button");
-        const settingsDiv = document.getElementById("settings-div");
 
-        settingsCloseButton.addEventListener("click", function() {
-            settingsDiv.style.display = "none";
-            popUpStatus.settingsOpen = false;
-        })
+        settingsCloseButton.addEventListener("click", settingsClose);
     };
+
+    const settingsSaveListener = function () {
+        const settingsSaveButton = document.getElementById("settings-save-button");
+
+        settingsSaveButton.addEventListener("click", function(e) {
+            e.preventDefault();
+            for (let i = 0; i < points.points.length; i++) {
+                const id = points.points[i].id;
+                const pointsValue = document.getElementById(`points-settings-${id}`).value;
+                points.points[i].value = pointsValue;
+                console.log(`universalControl.settingsSaveListener: Points for ${id} have been set to ${pointsValue}`);
+            }
+            storage.savePoints();
+            settingsClose();
+        })
+    }
+
+    const updateSettingsDisplay = function (pointsArray) {
+        for (let i = 0; i < pointsArray.length; i++){
+            const id = pointsArray[i].id;
+            const input = document.getElementById(`points-settings-${id}`);
+            input.value = pointsArray.find(a => a.id === id).value;
+        }
+    }
+
+    const settingsResetListener = function () {
+        const settingsResetButton = document.getElementById("settings-reset-button");
+
+        settingsResetButton.addEventListener("click", function(e) {
+            e.preventDefault();
+            points.points = points.initialPoints.slice();
+            storage.savePoints();
+            updateSettingsDisplay(points.points);
+        })
+    }
 
     const infoButtonListener = function () {
         const infoButton = document.getElementById("info-button");
-        const settingsButton = document.getElementById("settings-button");
         const infoDiv = document.getElementById("info-div");
 
         infoButton.addEventListener("click", function() {
-            if (popUpStatus.settingsOpen===false) {
+            if (popUpStatus.settingsOpen===false && popUpStatus.infoOpen===false) {
                 infoDiv.style.display = "block";
                 popUpStatus.infoOpen = true;
+            } else if (popUpStatus.infoOpen===true) {
+                infoClose();
             }
         });
     };
 
     const settingsButtonListener = function () {
-        const infoButton = document.getElementById("info-button");
         const settingsButton = document.getElementById("settings-button");
         const settingsDiv = document.getElementById("settings-div");
 
         settingsButton.addEventListener("click", function() {
-            if (popUpStatus.infoOpen===false) {
+            if (popUpStatus.infoOpen===false  && popUpStatus.settingsOpen===false) {
                 settingsDiv.style.display = "block";
                 popUpStatus.settingsOpen = true;
+                updateSettingsDisplay(points.points);
+            } else if (popUpStatus.settingsOpen===true) {
+                settingsClose();
             }
         });
     };
 
-    return {infoCloseListener, infoButtonListener, settingsCloseListener, settingsButtonListener};
+    return {infoCloseListener, infoButtonListener, settingsCloseListener, settingsButtonListener, settingsResetListener, settingsSaveListener, updateSettingsDisplay};
 })()
 
 export {queens, competitionData, storage, currentStatus, universalDisplay, images, points};
