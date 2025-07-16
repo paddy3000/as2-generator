@@ -141,8 +141,9 @@ button {
 }
 
 #episode-info {
-    height: 15rem;
+    height: max(15rem, auto);
     width: min(95vw, 65rem);
+    box-sizing: border-box;
 }
 
 #synopsis {
@@ -336,10 +337,12 @@ select#week-select {
 
 /* Results table CSS */
 #results-table-div {
-    display: flex;
+    /* display: flex; */
     justify-content: center;
     border-collapse: collapse;
     padding: 2rem 0;
+    max-width: 100vw;
+    overflow-x: scroll;
 }
 
 td, th {
