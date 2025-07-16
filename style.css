@@ -167,7 +167,7 @@ button {
 #settings-div {
     width: auto;
     top: 20vh;
-    left: 40vw;
+    /* left: 40vw; */
 }
 
 .close-button {
@@ -220,25 +220,27 @@ button {
   }  
 
 #queens-div {
+    --queen-image-width: min(40vw, 12rem);
+
     display: flex;
     flex-wrap: wrap;
     gap: 2rem;
     padding: 2rem;
     justify-content: center;
-    width: min(100vw, 1300px);
+    width: min(100vw, calc(var(--queen-image-width)*7));
     justify-self: center;
     width: 100w;
 }
 
 .queen-image-box {
-    width: 200px;
-    height: 200px;
+    width: var(--queen-image-width);
+    height: var(--queen-image-width);
     padding: var(--queen-border-size);
     /* border-radius: 1rem; */
 }
 
 .queen-image {
-    width: 200px;
+    width: var(--queen-image-width);;
     /* height: 200px; */
 }
 
