@@ -25,19 +25,21 @@ const display = (function () {
         weeksNavDiv.id = "nav-weeks";
         navDiv.appendChild(weeksNavDiv);
 
-        const leftArrow = document.createElement("input");
-        leftArrow.type = "image";
+        const leftArrow = document.createElement("button");
+        const leftArrowImage = document.createElement("img");
         leftArrow.id = "left-arrow";
-        leftArrow.alt = "Previous";
-        leftArrow.src = images.arrowLeft;
-        leftArrow.width = 60;
+        leftArrow.className = "arrow-button";
+        leftArrowImage.alt = "Previous";
+        leftArrowImage.src = images.arrowLeft;
+        leftArrow.appendChild(leftArrowImage);
 
-        const rightArrow = document.createElement("input");
-        rightArrow.type = "image";
+        const rightArrow = document.createElement("button");
+        const rightArrowImage = document.createElement("img");
         rightArrow.id = "right-arrow";
-        rightArrow.alt = "Next";
-        rightArrow.src = images.arrowRight;
-        rightArrow.width = 60;
+        rightArrow.className = "arrow-button";
+        rightArrowImage.alt = "Previous";
+        rightArrowImage.src = images.arrowRight;
+        rightArrow.appendChild(rightArrowImage);
 
         const dropdown = createWeeksDropdown ();
 
@@ -417,6 +419,7 @@ const control = (function () {
         resetButton.addEventListener("click", function () {
             for (let i = 0; i < queens.numberOfQueens; i++) {
                 queens.queens[i].placement = queens.queens[i].initialPlacement.slice();
+                queens.queens[i].return = queens.queens[i].initialReturn.slice();
 
                 display.updatePlacementDropdown();
             }
