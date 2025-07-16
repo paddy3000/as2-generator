@@ -110,15 +110,31 @@ const display = (function () {
         document.body.appendChild(queensDiv);
 
         for (let i = 0; i < queens.numberOfQueens; i++) {
-            displayObjects[i]=document.createElement("div");
-            displayObjects[i].id=`queen${i}`;
-            displayObjects[i].innerHTML=`<div id="queen-image-box${i}"><img src=${queens.queens[i].img} class="queen-image" id="queen-image${i}"></div>
-                                         <h3 class="queen-name">${queens.queens[i].queen}</h3>`;
+            const queenDiv = document.createElement("div");
+            queenDiv.id = `queen${i}`;
 
-            
-            queensDiv.appendChild(displayObjects[i]);
-            const innerDiv = document.getElementById(`queen${i}`);
-            createPlacementDropdown(innerDiv, `queen-dropdown${i}`);
+            const queenImageBox = document.createElement("div");
+            queenImageBox.id = `queen-image-box${i}`;
+            queenImageBox.className = "queen-image";
+
+            const queenImage = document.createElement("img");
+            queenImage.src = queens.queens[i].img;
+            queenImage.id = `queen-image${i}`;
+            queenImage.className = "queen-image";
+            queenImage.alt = queens.queens[i].queen;
+
+            const queenNameH3 = document.createElement("h3");
+            queenNameH3.class = "queen-name";
+            queenNameH3.innerText = queens.queens[i].queen;
+
+            queenDiv.appendChild(queenImageBox);
+            queenImageBox.appendChild(queenImage);
+            queenDiv.appendChild(queenNameH3);
+            queensDiv.appendChild(queenDiv);
+
+            console.log("Image attached")
+
+            createPlacementDropdown(queenDiv, `queen-dropdown${i}`);
         }
     }
 

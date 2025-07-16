@@ -112,7 +112,8 @@ const images = {
     arrowLeft: "images/leftArrow.png",
     arrowRight: "images/rightArrow.png",
     settings: "images/settings.png",
-    close: "images/close.png"
+    close: "images/close.png",
+    feedback: "images/feedback.png"
 }
 
 const storage = (function() {
@@ -306,6 +307,7 @@ const universalDisplay = (function() {
         settings.id = "settings-button";
         const settingsImg = document.createElement("img");
         settingsImg.src = images.settings;
+        settingsImg.alt = "Settings";
         settings.appendChild(settingsImg);
 
         // Create info button
@@ -313,10 +315,19 @@ const universalDisplay = (function() {
         info.id = "info-button";
         info.innerText = "i";
 
+        // Create feedback button
+        const feedback = document.createElement("button");
+        feedback.id = "feedback-button";
+        const feedbackImg = document.createElement("img");
+        feedbackImg.src = images.feedback;
+        feedbackImg.alt = "Feedback";
+        feedback.appendChild(feedbackImg);
+
         leftDiv.appendChild(heading);
 
         rightDiv.appendChild(info);
         rightDiv.appendChild(settings);
+        rightDiv.appendChild(feedback);
 
         headingDiv.appendChild(leftDiv);
         headingDiv.appendChild(rightDiv);

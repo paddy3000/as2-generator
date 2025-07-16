@@ -21,6 +21,7 @@
     --light-accent: rgba(234,195,217,255);
     --lighter-accent: rgb(224, 212, 219);
     --dark-accent: rgba(50,17,35,255);
+    --button-hover-colour: #FFE6E6
 }
 
 body {
@@ -101,10 +102,15 @@ button {
     background: var(--white-colour);
 }
 
+button:hover {
+    background: var(--button-hover-colour);
+}
+
 #main-heading > #main-heading-right > button {
     font-size: 2.5rem;
     font-family: monospace;
-    height: auto;
+    height: 3.6rem;
+    width: 3.6rem;
     aspect-ratio: 1 / 1;
     margin-left: 0.6rem;
 }
@@ -121,7 +127,8 @@ button {
     width: 2rem;
 }
 
-#settings-button > img {
+#settings-button > img,
+#feedback-button > img {
     height: 2.3rem;
 }
 
@@ -220,6 +227,8 @@ button {
     padding: 4px;
   }  
 
+
+
 #queens-div {
     --queen-image-width: min(40vw, 12rem);
 
@@ -296,6 +305,7 @@ button {
 
 input[type=radio] {
     display: block;
+    accent-color: var(--dark-accent);
 }
 
 .radio-elements > label {
