@@ -193,9 +193,9 @@ const displayProgress = (function () {
 
             const ppeScores = calculatePPE();
             const ppe = document.createElement("td");
-            const ppeText = document.createTextNode(`${ppeScores[i].ppe}`);
+            ppe.innerText = `${ppeScores[i].ppe}`;
             ppe.className = "ppe-cell";
-            ppe.appendChild(ppeText);
+            ppe.id = `ppe-cell-queen${i}`;
             row.appendChild(ppe);
 
             row.className="queen-result-row";
@@ -212,7 +212,29 @@ const displayProgress = (function () {
         resultsTable.appendChild(tbl);
         document.body.appendChild(resultsTable);
     };
-    return {createTable};
+
+    const refreshPPE = function () {
+        const ppeScores = calculatePPE();
+
+        for (let i = 0; i < queens.numberOfQueens; i++) {
+            const PPECell = document.getElementById(`ppe-cell-queen${i}`);
+            PPECell.innerText=`${ppeScores[i].ppe}`;
+        }
+    };
+
+    return {createTable, refreshPPE};
+})();
+
+const control = (function () {
+    const eventListeners = function () {
+        const settingsResetButton = document.getElementById("settings-reset-button");
+        const settingsSaveButton = document.getElementById("settings-save-button");
+
+        settingsResetButton.addEventListener("click", displayProgress.refreshPPE);
+        settingsSaveButton.addEventListener("click", displayProgress.refreshPPE);
+    };
+
+    return {eventListeners};
 })();
 
 storage.getData();
@@ -220,3 +242,4 @@ universalDisplay.createHeading();
 displayGeneric.createHeaders();
 displayProgress.createTable();
 displayGeneric.createHomeButton();
+control.eventListeners();
