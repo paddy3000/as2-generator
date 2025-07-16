@@ -22,13 +22,13 @@ const competitionData = {
 };
 
 const points = (function () {
-    const points =  [{id: "win",    value: 6},
-                     {id: "top2",   value: 5},
-                     {id: "high",   value: 4},
-                     {id: "safe",   value: 3},
-                     {id: "low",    value: 2},
-                     {id: "bottom", value: 1},
-                     {id: "elim",   value: 0}];
+    const points =  [{id: "win",  placement: "Win", value: 6},
+                     {id: "top2", placement: "Top 2", value: 5},
+                     {id: "high", placement: "High", value: 4},
+                     {id: "safe", placement: "Safe", value: 3},
+                     {id: "low",  placement: "Low", value: 2},
+                     {id: "btm",  placement: "Bottom", value: 1},
+                     {id: "elim", placement: "Eliminated", value: 0}];
 
     const initialPoints = points.slice();
 
@@ -229,9 +229,9 @@ const createSettingsBox = function() {
 
     fieldSet.appendChild(legend);
 
-
-    const addInput = function(id, text) {
+    const addInput = function(text) {
         const div = document.createElement("div");
+        const id = points.points.find(a => a.placement === text).id;
         div.className = "settings-input";
 
         const label = document.createElement("label");
@@ -242,20 +242,25 @@ const createSettingsBox = function() {
         input.type = "number";
         input.label = id;
         input.id = `points-settings-${id}`; 
-        input.value = points.points.find(a => a.id === id).value;
+        input.value = points.points.find(a => a.placement === text).value;
 
         div.appendChild(label);
         div.appendChild(input);
         fieldSet.appendChild(div);
     };
     
-    addInput("win", "Win");
-    addInput("top2", "Top 2");
-    addInput("high", "High");
-    addInput("safe", "Safe");
-    addInput("low", "Low");
-    addInput("bottom", "Bottom");
-    addInput("elim", "Eliminated");
+    for (let i = 0; i < competitionData.placements.length; i++) {
+        if (competitionData.placements[i]!=="Out" && competitionData.placements[i]!=="Quit") {
+            addInput(competitionData.placements[i]);
+        }
+    }
+    // addInput("Win");
+    // addInput("Top 2");
+    // addInput("High");
+    // addInput("Safe");
+    // addInput("Low");
+    // addInput("Bottom");
+    // addInput("Eliminated");
 
     const saveButton = document.createElement("button");
     saveButton.type = "submit";

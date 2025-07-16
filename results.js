@@ -1,4 +1,4 @@
-import { queens, competitionData, storage, universalDisplay} from "./script.js";
+import { queens, competitionData, storage, universalDisplay, points} from "./script.js";
 
 const displayGeneric = (function() {
     const createHeaders = function() {
@@ -44,18 +44,8 @@ const displayProgress = (function () {
 
     // Points per episode function
     const resultPoints = function(result) {
-        if (result==="Eliminated") {return 0}
-        else if (result==="Quit") {return 0}
-        else if (result==="Bottom") {return 1}
-        else if (result==="Low") {return 2}
-        else if (result==="Safe") {return 3}
-        else if (result==="High") {return 4}
-        else if (result==="Top 2") {return 5}
-        else if (result==="Win") {return 6}
-        else if (result==="Winner") {return 999}
-        else if (result==="Runner Up") {return 998}
-        else {console.log(`Warning: Update resultPoints format to account for ${result}`)}
-
+        const value = result!=="Quit" ? points.points.find(a => a.placement === result).value : 0;
+        return Number(value);
     }
 
     // Function to create object with elimination order for the queens
@@ -63,26 +53,31 @@ const displayProgress = (function () {
         const weeksInCompetition = new Array(queens.numberOfQueens);
         for (let i=0; i < queens.numberOfQueens; i++) {
             var lastWeekIn=1;
-            var lastPoints=0;
+            var finaleResult = 0;
 
             // Get last week where queen is not "Out"
             for (let j=0; j < competitionData.numberOfWeeks; j++){
                 if (queens.queens[i].placement[j]!=="Out") {
                     lastWeekIn=j+1;
-                    lastPoints=resultPoints(queens.queens[i].placement[j]);
+                    if (j===competitionData.numberOfWeeks-1) {
+                        if (queens.queens[i].placement[j]==="Winner") {finaleResult=1};
+                        if (queens.queens[i].placement[j]==="Runner Up") {finaleResult=2};
+                        if (queens.queens[i].placement[j]==="Eliminated") {finaleResult=3};
+
+                    }
                 };
             }
 
             weeksInCompetition[i]={index: i,
                                    queen: queens.queens[i].queen,
                                    weeks: lastWeekIn,
-                                   lastPoints: lastPoints
+                                   finaleResult: finaleResult
                                 };
 
         }
 
         // Sort by number of points in the last week so that finale winner is shown first
-        weeksInCompetition.sort((a,b) => b.lastPoints - a.lastPoints);
+        weeksInCompetition.sort((a,b) => a.finaleResult - b.finaleResult);
         weeksInCompetition.sort((a,b) => b.weeks - a.weeks);
         return weeksInCompetition;        
     }
