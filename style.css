@@ -1,3 +1,27 @@
+@font-face {
+    font-family: Limelight;
+    src: url(fonts/Limelight.ttf);
+    font-style: normal;
+}
+
+@font-face {
+    font-family: Lato;
+    src: url(fonts/Lato-Regular.ttf);
+    font-style: normal;
+}
+
+@font-face {
+    font-family: Roboto;
+    src: url(fonts/Roboto-VariableFont.ttf);
+    font-style: normal;
+}
+
+@font-face {
+    font-family: Rubik;
+    src: url(fonts/Rubik-VariableFont_wght.ttf);
+    font-style: normal;
+}
+
 :root {
     --queen-border-size: 0.6rem;
     
@@ -21,11 +45,16 @@
     --light-accent: rgba(234,195,217,255);
     --lighter-accent: rgb(224, 212, 219);
     --dark-accent: rgba(50,17,35,255);
-    --button-hover-colour: #FFE6E6
+    --button-hover-colour: #FFE6E6;
+
+    --header-font: Rubik;
+}
+
+* {
+    font-family: Rubik, Limelight, Arial, Helvetica, sans-serif;
 }
 
 body {
-    font-family: Arial, Helvetica, sans-serif;
     text-align: center;
     box-sizing: border-box;
     padding: 0;
@@ -43,11 +72,16 @@ h1 {
     background: white;
     border-radius: 3rem;
     padding: 0.3rem 1rem;
+    font-family: var(--header-font);
+    /* font-style: italic; */
+    /* font-weight: normal; */
 }
 
 h2 {
     margin: 0;
     padding: 1rem;
+    font-family: var(--header-font);
+    color: var(--dark-accent)
 }
 
 a {
@@ -380,13 +414,25 @@ select#week-select {
 td, th {
   padding: 0.2rem;
 }
+
+
+thead > tr > th {
+    background-color: var(--lighter-accent);
+}
   
 th {
-  background-color: rgb(237, 237, 242);
+  /* background-color: rgb(237, 237, 242); */
+  background-color: var(--lighter-accent);
 }
 
 tr {
-    background-color: rgb(249, 249, 255);
+    /* background-color: rgb(249, 249, 255); */
+    background-color: var(--white-colour);
+}
+
+.ppe-cell {
+    background: rgb(249, 249, 255);
+    padding: 0.2rem 1rem;
 }
 
 tr.out {
@@ -434,6 +480,10 @@ th.queen-name {
 
 #results-table td.result.low {
     background-color: var(--low-color);
+}
+
+#results-table td.result.safe {
+    background-color: rgb(249, 249, 255);
 }
 
 #results-table td.result.btm {
