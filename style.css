@@ -26,6 +26,7 @@
 
     --light-accent: rgba(234,195,217,255);
     --lighter-accent: rgb(224, 212, 219);
+    --lightest-accent: #faf2f7;
     --dark-accent: rgba(50,17,35,255);
     --button-hover-colour: #FFE6E6;
 
@@ -199,9 +200,9 @@ button:hover {
 
 #info-div,
 #settings-div {
-    border: 0.5rem solid var(--dark-accent);
+    border: 0.3rem solid var(--dark-accent);
     padding: 1rem 3rem;
-    background-color: var(--light-accent);
+    background-color: var(--lightest-accent);
     position: fixed;
     z-index: 999;
     border-radius: 1rem;
@@ -395,10 +396,9 @@ select#week-select {
 
 /* Results table CSS */
 #results-div {
-    justify-content: center;
+    /* justify-content: center; */
     padding: 2rem 0;
-    max-width: 100vw;
-    overflow-x: scroll;
+    max-width: min(90rem, 100vw);
 }
 
 #results-chart-div {
@@ -409,8 +409,9 @@ select#week-select {
 }
 
 #results-table-div {
-    display: flex;
-    justify-content: center;
+    /* display: flex;
+    justify-content: center; */
+    overflow-x: scroll;
 }
 
 td, th {
