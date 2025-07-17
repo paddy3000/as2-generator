@@ -48,6 +48,9 @@
     --button-hover-colour: #FFE6E6;
 
     --header-font: Rubik;
+
+    --button-size: min(3.6rem, 10vw);
+    --header-size: calc(1.8*var(--button-size));
 }
 
 * {
@@ -58,7 +61,7 @@ body {
     text-align: center;
     box-sizing: border-box;
     padding: 0;
-    padding-top: 7rem;
+    padding-top: var(--header-size);
     margin: 0;
     background-color: var(--white-colour);
     display: flex;
@@ -73,6 +76,7 @@ h1 {
     border-radius: 3rem;
     padding: 0.3rem 1rem;
     font-family: var(--header-font);
+    font-size: min(2rem, 5vw);
     /* font-style: italic; */
     /* font-weight: normal; */
 }
@@ -93,7 +97,7 @@ a {
     align-items: center;
     justify-content: space-between;
     background-color: var(--light-accent);
-    padding: 0 2rem;
+    padding: 0 min(2vw, calc(var(--button-size)*0.4));
     border-bottom: 0.2rem var(--dark-accent) solid;
     position: fixed;  
     top: 0;
@@ -101,7 +105,11 @@ a {
     left: 0;
     z-index: 999;
     width: 100w;
-    height: 7rem;
+    height: var(--header-size);
+}
+
+#main-heading h1 {
+    /* margin: min(0.01*var(--button-size), 2vh); */
 }
 
 #nav-div {
@@ -139,10 +147,6 @@ button {
 button:hover {
     background: var(--button-hover-colour);
     cursor: pointer;
-}
-
-#main-heading-right {
-    --button-size: min(3.6rem, 10vw);
 }
 
 #main-heading > #main-heading-right > button {
