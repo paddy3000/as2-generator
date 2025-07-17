@@ -1,22 +1,4 @@
 @font-face {
-    font-family: Limelight;
-    src: url(fonts/Limelight.ttf);
-    font-style: normal;
-}
-
-@font-face {
-    font-family: Lato;
-    src: url(fonts/Lato-Regular.ttf);
-    font-style: normal;
-}
-
-@font-face {
-    font-family: Roboto;
-    src: url(fonts/Roboto-VariableFont.ttf);
-    font-style: normal;
-}
-
-@font-face {
     font-family: Rubik;
     src: url(fonts/Rubik-VariableFont_wght.ttf);
     font-style: normal;
@@ -422,6 +404,14 @@ select#week-select {
 
 #results-chart-div {
     margin: 4rem 0 2rem 0 ;
+    border: var(--lighter-accent) 0.5rem solid;
+    border-radius: 2rem;
+    padding: 0 2rem 1rem 2rem;
+}
+
+#results-table-div {
+    display: flex;
+    justify-content: center;
 }
 
 td, th {

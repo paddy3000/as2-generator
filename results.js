@@ -262,6 +262,7 @@ const control = (function () {
         resetButton.addEventListener("click", function () {
             universalControl.resetResults();
             displayProgress.createTable();
+            graph.createGraph();
         });
     };
 
@@ -300,6 +301,9 @@ const graph = (function () {
     const createGraph = function() {
         const chartDiv = document.getElementById("results-chart-div");
 
+        const h3 = document.createElement("h3");
+        h3.innerText = "Total Points by Episode";
+
         const datasets = createDatasets();
         const labels = new Array(competitionData.numberOfWeeks);
         for (let i = 0; i < competitionData.numberOfWeeks; i++) {
@@ -312,26 +316,52 @@ const graph = (function () {
         const chart = new Chart(canvas, {
             type: 'line',
             data: {
-              labels: labels, 
-              datasets: datasets
+                labels: labels, 
+                datasets: datasets
             },
             options: {
                 plugins: {
-                    title: {
-                        display: true,
-                        text: "Contestant Progress"
+                    legend: {
+                        labels: {
+                            font: {
+                                family: 'Rubik',
+                                size: 14
+                            }
+                        }
                     }
-              }, 
-              responsive: true,
-              scales: {
+                },
+            scales: {
+                x: {
+                    title: {
+                        text: "Episode",
+                        display: true,
+                        font: {
+                            size: 20,
+                            weight: 'bold',
+                            family: 'Rubik',
+                            color: "black"
+                        }
+                    }
+                },
                 y: {
-                  beginAtZero: true
+                    beginAtZero: true,
+                    title: {
+                        text: "Total Points",
+                        display: true,
+                        font: {
+                            size: 20,
+                            weight: 'bold',
+                            family: 'Rubik',
+                            color: "black"
+                        }
+                    }
                 }
               }
             }
           });
 
         chartDiv.innerHTML = "";
+        chartDiv.appendChild(h3);
         chartDiv.appendChild(canvas);
     }
 
