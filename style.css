@@ -141,13 +141,37 @@ button:hover {
     cursor: pointer;
 }
 
+#main-heading-right {
+    --button-size: min(3.6rem, 10vw);
+}
+
 #main-heading > #main-heading-right > button {
-    font-size: 2.5rem;
-    font-family: monospace;
-    height: 3.6rem;
-    width: 3.6rem;
+    height: var(--button-size);
+    width: var(--button-size);
     aspect-ratio: 1 / 1;
     margin-left: 0.6rem;
+
+    font-size: calc(0.7*var(--button-size));
+    font-family: monospace;
+}
+
+#main-heading-right img {
+    height: calc(0.6*var(--button-size));
+}
+
+#main-heading-right a {
+    display: flex;
+}
+
+#home-button img {
+    height: calc(0.55*var(--button-size));
+    padding: 0 0 calc(0.06*var(--button-size)) 0 ;
+}
+
+
+
+#settings-button {
+    padding: calc(0.1*var(--button-size)) calc(0.17*var(--button-size));
 }
 
 .arrow-button  {
@@ -162,24 +186,6 @@ button:hover {
     width: 2rem;
 }
 
-#main-heading-right img {
-    height: 2.3rem;
-}
-
-
-#home-button img {
-    height: 2rem;
-    padding: 0 0 0.3rem 0 ;
-}
-
-#main-heading-right a {
-    display: flex;
-}
-
-#settings-button {
-    padding: 0.4rem 0.6rem;
-}
-
 .subheading-div {
     /* background-color: var(--lighter-accent); */
     border: var(--lighter-accent) 0.4rem solid;
@@ -192,7 +198,7 @@ button:hover {
 }
 
 #episode-info {
-    height: 15rem;
+    min-height: 15rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
