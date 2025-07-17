@@ -11,7 +11,7 @@ const competitionData = {
                "The queens impersonate celebrities in a quick-witted TV game show and burn rubber in a latex runway. With guest judge Ross Mathews.",
                "The queens are challenged to perform in a lip-syncing dance number inspired by the legendary historical women. Fashion designer Jeremy Scott guest judges.",
                "The queens' acting chops are tested in parody movie sequels of RuPaul's favorite movies. Pussycat Doll Nichole Scherzinger guest judges.",
-               "The queens must perform a live stand-up comedy act in front of an audience of judgmental drag queens. Ross Mathews returns to guest judge.",
+               "The queens must perform a live stand-up comedy act in front of an audience of judgmental drag queens. The eliminated queens choose their partners in reverse elimination order. Ross Mathews returns to guest judge.",
                "The queens design and market drag-influenced products. Entrepreneur Marcus Lemonis (CNBC’s The Profit) co-stars, and comedian Graham Norton guest judges.",
                "The queens must makeover family members and vogue the house down. Aubrey Plaza (Parks and Recreation) guest judges.",
                "The winner of RuPaul’s Drag Race All Stars is crowned. But first, the queens must write original rap lyrics and perform as the ultimate girl group."] ,
@@ -314,18 +314,19 @@ const universalDisplay = (function() {
         const rightDiv = document.getElementById("main-heading-right");
         
         // Create home button
-        const homeButton = document.createElement("button");
-        homeButton.id = "home-button";
-
         const homeLink = document.createElement("a");
         homeLink.href = "index.html";
+
+        const homeButton = document.createElement("button");
+        homeButton.id = "home-button";
 
         const homeImg = document.createElement("img");
         homeImg.src = images.home;
         homeImg.alt = "Home";
-        homeLink.appendChild(homeImg);
-        homeButton.appendChild(homeLink);
-        rightDiv.appendChild(homeButton);
+        
+        homeLink.appendChild(homeButton);
+        homeButton.appendChild(homeImg);
+        rightDiv.appendChild(homeLink);
     };
 
     const createInfoButton = function() {
@@ -369,9 +370,10 @@ const universalDisplay = (function() {
         const feedbackImg = document.createElement("img");
         feedbackImg.src = images.feedback;
         feedbackImg.alt = "Feedback";
-        feedbackLink.appendChild(feedbackImg);
-        feedbackButton.appendChild(feedbackLink);
-        rightDiv.appendChild(feedbackButton);
+
+        feedbackLink.appendChild(feedbackButton);
+        feedbackButton.appendChild(feedbackImg);
+        rightDiv.appendChild(feedbackLink);
     };
 
     const createButtons = function(createHome, createInfo, createSettings, createFeedback) {

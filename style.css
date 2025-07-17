@@ -131,7 +131,7 @@ button:hover {
     cursor: pointer;
 }
 
-#main-heading > #main-heading-right > button {
+#main-heading-right button {
     height: var(--button-size);
     width: var(--button-size);
     aspect-ratio: 1 / 1;
@@ -395,7 +395,6 @@ select#week-select {
 
 /* Results table CSS */
 #results-div {
-    /* display: flex; */
     justify-content: center;
     padding: 2rem 0;
     max-width: 100vw;
@@ -418,6 +417,9 @@ td, th {
   padding: 0.2rem;
 }
 
+canvas {
+    max-height: min(35rem, 80vh);
+}
 
 thead > tr > th {
     background-color: var(--lighter-accent);
@@ -515,8 +517,11 @@ th.queen-name {
 
 tfoot {
     font-size: 1.3rem;
-    font-style: italic;    
+    font-style: italic;  
 }
+
+tfoot td {
+    padding: 1rem 0;  }
 
 /* #feedback-form-div {
     display: flex;

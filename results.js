@@ -313,6 +313,9 @@ const graph = (function () {
         const canvas = document.createElement("canvas");
         canvas.id = "results-chart";
 
+        const fontFamily = "Rubik";
+        const textColour = "black";
+
         const chart = new Chart(canvas, {
             type: 'line',
             data: {
@@ -324,12 +327,17 @@ const graph = (function () {
                     legend: {
                         labels: {
                             font: {
-                                family: 'Rubik',
+                                family: fontFamily,
                                 size: 14
-                            }
-                        }
+                            },
+                            color: textColour
+                        },
+                        position: "bottom",
+                        padding: 20
                     }
                 },
+            responsive: true,
+            maintainAspectRatio: false,
             scales: {
                 x: {
                     title: {
@@ -338,8 +346,16 @@ const graph = (function () {
                         font: {
                             size: 20,
                             weight: 'bold',
-                            family: 'Rubik',
-                            color: "black"
+                            family: fontFamily
+                        },
+                        color: textColour,
+                        padding: {bottom: 20, top: 10}
+                    },
+                    ticks: {
+                        color: textColour,
+                        font: {
+                            size: 16,
+                            family: fontFamily
                         }
                     }
                 },
@@ -351,8 +367,16 @@ const graph = (function () {
                         font: {
                             size: 20,
                             weight: 'bold',
-                            family: 'Rubik',
-                            color: "black"
+                            family: fontFamily
+                        },
+                        color: textColour,
+                        padding: { bottom: 20}
+                    },
+                    ticks: {
+                        color: textColour,
+                        font: {
+                            size: 16,
+                            family: fontFamily
                         }
                     }
                 }
