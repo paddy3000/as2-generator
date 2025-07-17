@@ -316,6 +316,12 @@ const graph = (function () {
               datasets: datasets
             },
             options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: "Contestant Progress"
+                    }
+              }, 
               responsive: true,
               scales: {
                 y: {
