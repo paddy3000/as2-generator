@@ -1,5 +1,5 @@
 
-import {queens, competitionData, storage, currentStatus, universalDisplay, images}  from "./script.js";
+import {queens, competitionData, storage, currentStatus, universalDisplay, universalControl, images}  from "./script.js";
 
 const display = (function () {
     const createWeeksDropdown = function() {
@@ -71,15 +71,7 @@ const display = (function () {
         navResults.appendChild(resultsLink);
     }
 
-    const createResetButton = function() {
-        const navResults = document.getElementById("nav-results");
-        
-        const resetButton = document.createElement("button");
-        resetButton.textContent="Reset Results";
-        resetButton.id="reset-results";
-        
-        navResults.appendChild(resetButton);
-    }
+
 
     const createEpisodeHeaders = function () {
         const episodeInfo = document.createElement("div");
@@ -266,9 +258,7 @@ const display = (function () {
 
     const init = function() {
         universalDisplay.createHeading();
-        // universalDisplay.createSettingsButton();
-        universalDisplay.createInfoButton();
-        universalDisplay.createFeedbackButton();
+        universalDisplay.createButtons(false, true, false, true);
         createEpisodeHeaders();
         displayQueens();
         createReturningButton();
@@ -276,7 +266,7 @@ const display = (function () {
         createArrows();
         createResultsNavDiv();
         createResultsButton();
-        createResetButton();
+        universalDisplay.createResetButton("nav-results");
     }
 
     const weekUpdate = function() {
@@ -427,25 +417,11 @@ const control = (function () {
         }
     };
 
-    // Code from when the results table was included on the main page
-    // const updateResultsTable = function () {
-    //     const resultsButton = document.getElementById("see-results");
-
-    //     resultsButton.addEventListener("click", displayProgress.createTable)
-    // };
-
-    const resetResults = function () {
+    const resetListener = function () {
         const resetButton = document.getElementById("reset-results");
-
         resetButton.addEventListener("click", function () {
-            for (let i = 0; i < queens.numberOfQueens; i++) {
-                queens.queens[i].placement = queens.queens[i].initialPlacement.slice();
-                queens.queens[i].return = queens.queens[i].initialReturn.slice();
-
-                display.updatePlacementDropdown();
-            }
-
-            storage.saveData();
+            universalControl.resetResults();
+            for (let i = 0; i < queens.numberOfQueens; i++) { display.updatePlacementDropdown()}
         });
     };
 
@@ -453,7 +429,7 @@ const control = (function () {
         arrowListeners();
         placementUpdateListener();
         returningUpdate();
-        resetResults();
+        resetListener();
     }
 
     return { getPreviousWeek, eventListeners, placementUpdateListener };

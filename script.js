@@ -310,6 +310,37 @@ const universalDisplay = (function() {
         document.body.appendChild(headingDiv);
     }
 
+    const createHomeButton = function() {
+        const rightDiv = document.getElementById("main-heading-right");
+        
+        // Create home button
+        const homeButton = document.createElement("button");
+        homeButton.id = "home-button";
+
+        const homeLink = document.createElement("a");
+        homeLink.href = "index.html";
+
+        const homeImg = document.createElement("img");
+        homeImg.src = images.home;
+        homeImg.alt = "Home";
+        homeLink.appendChild(homeImg);
+        homeButton.appendChild(homeLink);
+        rightDiv.appendChild(homeButton);
+    };
+
+    const createInfoButton = function() {
+        const rightDiv = document.getElementById("main-heading-right");
+
+        // Create info button
+        const info = document.createElement("button");
+        info.id = "info-button";
+        info.innerText = "i";
+        rightDiv.appendChild(info);
+
+        createInfoBox();
+        universalControl.infoButtonListener();
+    };
+
     const createSettingsButton = function() {
         const rightDiv = document.getElementById("main-heading-right");
         // Create setting button
@@ -323,19 +354,6 @@ const universalDisplay = (function() {
 
         createSettingsBox();
         universalControl.settingsButtonListener();
-    }
-
-    const createInfoButton = function() {
-        const rightDiv = document.getElementById("main-heading-right");
-
-        // Create info button
-        const info = document.createElement("button");
-        info.id = "info-button";
-        info.innerText = "i";
-        rightDiv.appendChild(info);
-
-        createInfoBox();
-        universalControl.infoButtonListener();
     };
 
     const createFeedbackButton = function() {
@@ -356,24 +374,22 @@ const universalDisplay = (function() {
         rightDiv.appendChild(feedbackButton);
     };
 
-    const createHomeButton = function() {
-        const rightDiv = document.getElementById("main-heading-right");
+    const createButtons = function(createHome, createInfo, createSettings, createFeedback) {
+        if (createHome) {createHomeButton()};
+        if (createInfo) {createInfoButton()};
+        if (createSettings) {createSettingsButton()};
+        if (createFeedback) {createFeedbackButton()};
+    }
+
+    const createResetButton = function(navID) {
+        const navResults = document.getElementById(navID);
         
-        // Create home button
-        const homeButton = document.createElement("button");
-        homeButton.id = "home-button";
-
-        const homeLink = document.createElement("a");
-        homeLink.href = "index.html";
-
-        const homeImg = document.createElement("img");
-        homeImg.src = images.home;
-        homeImg.alt = "Home";
-        homeLink.appendChild(homeImg);
-        homeButton.appendChild(homeLink);
-        rightDiv.appendChild(homeButton);
-    };
-
+        const resetButton = document.createElement("button");
+        resetButton.textContent="Reset Results";
+        resetButton.id="reset-results";
+        
+        navResults.appendChild(resetButton);
+    }
 
     const createNavDiv = function() {
         const navDiv = document.createElement("div");
@@ -381,7 +397,7 @@ const universalDisplay = (function() {
         document.body.appendChild(navDiv);
     };
 
-    return { createHeading, createSettingsButton, createInfoButton, createFeedbackButton, createHomeButton, createNavDiv, createInfoBox };
+    return { createHeading, createButtons, createNavDiv, createInfoBox, createResetButton};
 })();
 
 
@@ -480,7 +496,16 @@ const universalControl = (function () {
         });
     };
 
-    return {infoCloseListener, infoButtonListener, settingsCloseListener, settingsButtonListener, settingsResetListener, settingsSaveListener, updateSettingsDisplay};
+    const resetResults = function() {
+        for (let i = 0; i < queens.numberOfQueens; i++) {
+            queens.queens[i].placement = queens.queens[i].initialPlacement.slice();
+            queens.queens[i].return = queens.queens[i].initialReturn.slice();
+        };
+
+        storage.saveData();
+    }
+
+    return {infoCloseListener, infoButtonListener, settingsCloseListener, settingsButtonListener, settingsResetListener, settingsSaveListener, updateSettingsDisplay, resetResults};
 })()
 
-export {queens, competitionData, storage, currentStatus, universalDisplay, images, points};
+export {queens, competitionData, storage, currentStatus, universalDisplay, universalControl, images, points};

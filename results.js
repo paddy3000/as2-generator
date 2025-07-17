@@ -1,4 +1,4 @@
-import { queens, competitionData, storage, universalDisplay, points} from "./script.js";
+import { queens, competitionData, storage, universalDisplay, universalControl, points} from "./script.js";
 
 const displayGeneric = (function() {
     const createHeaders = function() {
@@ -13,24 +13,30 @@ const displayGeneric = (function() {
         document.body.appendChild(subheadingDiv);
         console.log("displayGeneric.createHeaders: Subheading created");
     };
+    
+    const createResultsDiv = function () {
+        const resultsTable = document.createElement("div");
+        resultsTable.id = "results-table-div";
+        document.body.appendChild(resultsTable);
+    };
 
-    const createHomeButton = function() {
+    const createNavDiv = function() {
         universalDisplay.createNavDiv();
         const navDiv = document.getElementById("nav-div");
 
-        const homeLink = document.createElement("a");
-        homeLink.href = "index.html";
-
-        const resultsButton = document.createElement("button");
-        resultsButton.textContent="Home";
-        resultsButton.id="home-button";
-
-        homeLink.appendChild(resultsButton);
-        navDiv.appendChild(homeLink);
-        document.body.appendChild(navDiv);
+        universalDisplay.createResetButton("nav-div");
     };
 
-    return { createHeaders, createHomeButton };
+    const init = function () {
+        universalDisplay.createHeading();
+        universalDisplay.createButtons(true, true, true, true);
+        createHeaders();
+        createResultsDiv();
+        createNavDiv();
+    }
+
+
+    return { init };
 })();
 
 const displayProgress = (function () {
@@ -109,9 +115,7 @@ const displayProgress = (function () {
     }
 
     const createTable = function () {
-        // Create div
-        const resultsTable = document.createElement("div");
-        resultsTable.id = "results-table-div";
+        const resultsTable = document.getElementById("results-table-div");
 
         // Create empty table elements
         const tbl = document.createElement("table");
@@ -219,8 +223,8 @@ const displayProgress = (function () {
         tbl.appendChild(tblHeader);
         tbl.appendChild(tblBody);
         tbl.appendChild(tfoot);
+        resultsTable.innerHTML = "";
         resultsTable.appendChild(tbl);
-        document.body.appendChild(resultsTable);
     };
 
     const refreshPPE = function () {
@@ -236,24 +240,31 @@ const displayProgress = (function () {
 })();
 
 const control = (function () {
+    const resetListener = function () {
+        const resetButton = document.getElementById("reset-results");
+        resetButton.addEventListener("click", function () {
+            universalControl.resetResults();
+            displayProgress.createTable();
+        });
+    };
+
     const eventListeners = function () {
         const settingsResetButton = document.getElementById("settings-reset-button");
         const settingsSaveButton = document.getElementById("settings-save-button");
 
         settingsResetButton.addEventListener("click", displayProgress.refreshPPE);
         settingsSaveButton.addEventListener("click", displayProgress.refreshPPE);
+
+        resetListener();
     };
+
+
 
     return {eventListeners};
 })();
 
 storage.getData();
-universalDisplay.createHeading();
-universalDisplay.createSettingsButton();
-universalDisplay.createInfoButton();
-universalDisplay.createFeedbackButton();
-universalDisplay.createHomeButton();
-displayGeneric.createHeaders();
+
+displayGeneric.init();
 displayProgress.createTable();
-displayGeneric.createHomeButton();
 control.eventListeners();
