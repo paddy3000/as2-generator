@@ -266,6 +266,9 @@ const display = (function () {
 
     const init = function() {
         universalDisplay.createHeading();
+        // universalDisplay.createSettingsButton();
+        universalDisplay.createInfoButton();
+        universalDisplay.createFeedbackButton();
         createEpisodeHeaders();
         displayQueens();
         createReturningButton();

@@ -113,7 +113,8 @@ const images = {
     arrowRight: "images/rightArrow.png",
     settings: "images/settings.png",
     close: "images/close.png",
-    feedback: "images/feedback.png"
+    feedback: "images/feedback.png",
+    home: "images/home.png"
 }
 
 const storage = (function() {
@@ -302,6 +303,15 @@ const universalDisplay = (function() {
         const heading = document.createElement("h1");
         heading.textContent = "All Stars 2 Simulator";
 
+        leftDiv.appendChild(heading);
+
+        headingDiv.appendChild(leftDiv);
+        headingDiv.appendChild(rightDiv);
+        document.body.appendChild(headingDiv);
+    }
+
+    const createSettingsButton = function() {
+        const rightDiv = document.getElementById("main-heading-right");
         // Create setting button
         const settings = document.createElement("button");
         settings.id = "settings-button";
@@ -309,12 +319,28 @@ const universalDisplay = (function() {
         settingsImg.src = images.settings;
         settingsImg.alt = "Settings";
         settings.appendChild(settingsImg);
+        rightDiv.appendChild(settings);
+
+        createSettingsBox();
+        universalControl.settingsButtonListener();
+    }
+
+    const createInfoButton = function() {
+        const rightDiv = document.getElementById("main-heading-right");
 
         // Create info button
         const info = document.createElement("button");
         info.id = "info-button";
         info.innerText = "i";
+        rightDiv.appendChild(info);
 
+        createInfoBox();
+        universalControl.infoButtonListener();
+    };
+
+    const createFeedbackButton = function() {
+        const rightDiv = document.getElementById("main-heading-right");
+        
         // Create feedback button
         const feedbackButton = document.createElement("button");
         feedbackButton.id = "feedback-button";
@@ -325,34 +351,40 @@ const universalDisplay = (function() {
         const feedbackImg = document.createElement("img");
         feedbackImg.src = images.feedback;
         feedbackImg.alt = "Feedback";
-        
-        feedbackButton.appendChild(feedbackLink);
         feedbackLink.appendChild(feedbackImg);
-
-        leftDiv.appendChild(heading);
-
-        rightDiv.appendChild(info);
-        rightDiv.appendChild(settings);
+        feedbackButton.appendChild(feedbackLink);
         rightDiv.appendChild(feedbackButton);
+    };
 
-        headingDiv.appendChild(leftDiv);
-        headingDiv.appendChild(rightDiv);
-        document.body.appendChild(headingDiv);
+    const createHomeButton = function() {
+        const rightDiv = document.getElementById("main-heading-right");
+        
+        // Create home button
+        const homeButton = document.createElement("button");
+        homeButton.id = "home-button";
 
-        createInfoBox();
-        createSettingsBox();
-        universalControl.infoButtonListener();
-        universalControl.settingsButtonListener();
-    }
+        const homeLink = document.createElement("a");
+        homeLink.href = "index.html";
+
+        const homeImg = document.createElement("img");
+        homeImg.src = images.home;
+        homeImg.alt = "Home";
+        homeLink.appendChild(homeImg);
+        homeButton.appendChild(homeLink);
+        rightDiv.appendChild(homeButton);
+    };
+
 
     const createNavDiv = function() {
         const navDiv = document.createElement("div");
         navDiv.id = "nav-div";
         document.body.appendChild(navDiv);
-    }
+    };
 
-    return { createHeading, createNavDiv, createInfoBox };
+    return { createHeading, createSettingsButton, createInfoButton, createFeedbackButton, createHomeButton, createNavDiv, createInfoBox };
 })();
+
+
 
 const universalControl = (function () {
     const popUpStatus = {

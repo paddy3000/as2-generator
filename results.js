@@ -249,6 +249,10 @@ const control = (function () {
 
 storage.getData();
 universalDisplay.createHeading();
+universalDisplay.createSettingsButton();
+universalDisplay.createInfoButton();
+universalDisplay.createFeedbackButton();
+universalDisplay.createHomeButton();
 displayGeneric.createHeaders();
 displayProgress.createTable();
 displayGeneric.createHomeButton();

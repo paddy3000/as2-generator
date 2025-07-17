@@ -104,6 +104,7 @@ button {
 
 button:hover {
     background: var(--button-hover-colour);
+    cursor: pointer;
 }
 
 #main-heading > #main-heading-right > button {
@@ -127,12 +128,17 @@ button:hover {
     width: 2rem;
 }
 
-#settings-button > img,
-#feedback-button  img {
+#main-heading-right img {
     height: 2.3rem;
 }
 
-#feedback-button > a {
+
+#home-button img {
+    height: 2rem;
+    padding: 0 0 0.3rem 0 ;
+}
+
+#main-heading-right a {
     display: flex;
 }
 
@@ -339,6 +345,10 @@ select {
     border-radius: 0.4rem;
     border: 0;
     text-align: center;
+}
+
+select:hover {
+    cursor: pointer;
 }
 
 select#week-select {
