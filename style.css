@@ -276,7 +276,7 @@ button:hover {
     display: flex;
     flex-wrap: wrap;
     gap: 2rem;
-    padding: 2rem;
+    padding: 2rem 0;
     justify-content: center;
     width: min(100vw, calc(var(--queen-image-width)*7));
     justify-self: center;
