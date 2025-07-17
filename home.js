@@ -294,20 +294,27 @@ const control = (function () {
         const leftArrow = document.getElementById("left-arrow");
         const rightArrow = document.getElementById("right-arrow");
 
-        leftArrow.addEventListener("click", function (e) {
+        const incrementWeek = function(change) {
             previousWeek=currentStatus.week;
-            currentStatus.week--;
-            console.log(`control.arrowListeners: Week decreased to ${currentStatus.week}`);
-            display.weekUpdate();
-        });
+            if (change==="decrease" && currentStatus.week > 1) {currentStatus.week--};
+            if (change==="increase" && currentStatus.week < competitionData.numberOfWeeks) {currentStatus.week++};
 
-        rightArrow.addEventListener("click", function (e) {
-            previousWeek=currentStatus.week;
-            currentStatus.week++;
-            console.log(`control.arrowListeners: Week increased to ${currentStatus.week}`);
+            console.log(`control.arrowListeners: Week updated to ${currentStatus.week}`);
             display.weekUpdate();
-        });
+        }
 
+        leftArrow.addEventListener("click", function () {incrementWeek("decrease")});
+
+        rightArrow.addEventListener("click", function () {incrementWeek("increase")});
+
+        document.addEventListener("keyup", function(e) {
+            if (e.key==="ArrowLeft" || e.key==="ArrowRight"){
+                e.preventDefault();
+                if (e.key==="ArrowLeft") {incrementWeek("decrease")};
+                if (e.key==="ArrowRight") {incrementWeek("increase")};
+            }
+          });
+        
         const weekSelect = document.getElementById("week-select");
 
         weekSelect.addEventListener("change", function (e) {
