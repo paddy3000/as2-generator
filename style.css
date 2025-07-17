@@ -75,7 +75,7 @@ a {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: var(--lighter-accent);
+    background-color: var(--light-accent);
     border-top: 0.2rem var(--dark-accent) solid;
     padding:  0;
     padding: 1rem 0;
@@ -158,7 +158,11 @@ button:hover {
 }
 
 #episode-info {
-    height: max(15rem, auto);
+    height: 15rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     width: min(95vw, 65rem);
     box-sizing: border-box;
 }
@@ -171,7 +175,7 @@ button:hover {
 #settings-div {
     border: 0.5rem solid var(--dark-accent);
     padding: 1rem 3rem;
-    background-color: var(--light-accent);
+    background-color: var(--lighter-accent);
     position: fixed;
     z-index: 999;
     border-radius: 1rem;
@@ -250,6 +254,10 @@ button:hover {
     width: min(100vw, calc(var(--queen-image-width)*7));
     justify-self: center;
     width: 100w;
+}
+
+.queen-div {
+    height: 345px;
 }
 
 .queen-image-box {
@@ -456,3 +464,14 @@ tfoot {
     font-size: 1.3rem;
     font-style: italic;    
 }
+
+/* #feedback-form-div {
+    display: flex;
+    align-items: center;
+    width: min(100vw, 30rem);
+} */
+
+iframe {
+    border: 0;
+    margin: 2rem 0 0 0;
+} 

@@ -104,6 +104,7 @@ const display = (function () {
         for (let i = 0; i < queens.numberOfQueens; i++) {
             const queenDiv = document.createElement("div");
             queenDiv.id = `queen${i}`;
+            queenDiv.className = "queen-div";
 
             const queenImageBox = document.createElement("div");
             queenImageBox.id = `queen-image-box${i}`;
