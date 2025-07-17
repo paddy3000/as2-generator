@@ -15,9 +15,19 @@ const displayGeneric = (function() {
     };
     
     const createResultsDiv = function () {
+        const resultsDiv = document.createElement("div");
+        resultsDiv.id = "results-div";
+
         const resultsTable = document.createElement("div");
         resultsTable.id = "results-table-div";
-        document.body.appendChild(resultsTable);
+
+        const resultsChart = document.createElement("div");
+        resultsChart.id = "results-chart-div";
+        
+        resultsDiv.appendChild(resultsTable);
+        resultsDiv.appendChild(resultsChart);
+
+        document.body.appendChild(resultsDiv);
     };
 
     const createNavDiv = function() {
@@ -33,6 +43,7 @@ const displayGeneric = (function() {
         createHeaders();
         createResultsDiv();
         createNavDiv();
+        graph.createGraph();
     }
 
 
@@ -94,12 +105,15 @@ const displayProgress = (function () {
         for (let i = 0; i < queens.numberOfQueens; i++) {
             var weeksInCompetition=0;
             var totalPoints=0;
+            const totalPointsArray = new Array(competitionData.numberOfWeeks);
 
             for (let j = 0; j < competitionData.numberOfWeeks; j++) {
                 if (queens.queens[i].placement[j]!=="Out" && queens.queens[i].placement[j]!=="Quit" && competitionData.competitiveEpisode[j]) {
                     weeksInCompetition++;
                     totalPoints += resultPoints(queens.queens[i].placement[j]);
                 }
+
+                if (queens.queens[i].placement[j]!=="Out") {totalPointsArray[j] = totalPoints};
             }
 
             const ppe = totalPoints / weeksInCompetition;
@@ -107,7 +121,8 @@ const displayProgress = (function () {
 
             ppeScores[i] = {index: i,
                             queen: queens.queens[i].queen,
-                            ppe: ppeRounded
+                            ppe: ppeRounded,
+                            totalPoints: totalPointsArray
             }
         }
 
@@ -234,9 +249,11 @@ const displayProgress = (function () {
             const PPECell = document.getElementById(`ppe-cell-queen${i}`);
             PPECell.innerText=`${ppeScores[i].ppe}`;
         }
+
+        graph.createGraph();
     };
 
-    return {createTable, refreshPPE};
+    return {createTable, refreshPPE, calculatePPE};
 })();
 
 const control = (function () {
@@ -263,8 +280,63 @@ const control = (function () {
     return {eventListeners};
 })();
 
-storage.getData();
+// Code to create the graph
 
+const graph = (function () {
+    const createDatasets = function() {
+        const datasets = new Array(queens.numberOfQueens);
+        const ppeScores = displayProgress.calculatePPE();
+
+        for (let i = 0; i < queens.numberOfQueens; i++) {
+            datasets[i] = {label: queens.queens[i].queen,
+                           data: ppeScores[i].totalPoints,
+                           fill: false
+            }
+        }
+
+        return datasets;
+    };
+
+    const createGraph = function() {
+        const chartDiv = document.getElementById("results-chart-div");
+
+        const datasets = createDatasets();
+        const labels = new Array(competitionData.numberOfWeeks);
+        for (let i = 0; i < competitionData.numberOfWeeks; i++) {
+            labels[i] = i + 1;
+        };
+
+        const canvas = document.createElement("canvas");
+        canvas.id = "results-chart";
+
+        const chart = new Chart(canvas, {
+            type: 'line',
+            data: {
+              labels: labels, 
+              datasets: datasets
+            },
+            options: {
+              responsive: true,
+              scales: {
+                y: {
+                  beginAtZero: true
+                }
+              }
+            }
+          });
+
+        chartDiv.innerHTML = "";
+        chartDiv.appendChild(canvas);
+    }
+
+    return {createGraph}
+})();
+
+
+
+// Run everything
+
+storage.getData();
 displayGeneric.init();
 displayProgress.createTable();
 control.eventListeners();

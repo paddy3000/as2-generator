@@ -219,7 +219,7 @@ button:hover {
 #settings-div {
     border: 0.5rem solid var(--dark-accent);
     padding: 1rem 3rem;
-    background-color: var(--lighter-accent);
+    background-color: var(--light-accent);
     position: fixed;
     z-index: 999;
     border-radius: 1rem;
@@ -412,13 +412,16 @@ select#week-select {
 }
 
 /* Results table CSS */
-#results-table-div {
+#results-div {
     /* display: flex; */
     justify-content: center;
-    border-collapse: collapse;
     padding: 2rem 0;
     max-width: 100vw;
     overflow-x: scroll;
+}
+
+#results-chart-div {
+    margin: 4rem 0 2rem 0 ;
 }
 
 td, th {
