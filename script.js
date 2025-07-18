@@ -127,14 +127,14 @@ const storage = (function() {
 
     const savePoints = function () {
         localStorage.setItem("points", JSON.stringify(points.points));
-        console.log(`storage.saveData: points saved to local storage`);
+        console.log(`storage.savePoints: points saved to local storage`);
     }
 
     // Read in queen data
     const getData = function() {
         let storedQueens = JSON.parse(localStorage.getItem("queensData"));   
         let storedWeek = JSON.parse(localStorage.getItem("currentStatus.week"));
-        let storedPoints = JSON.parse(localStorage.getItem("points"));   
+        let storedPoints = JSON.parse(localStorage.getItem("points"));
         
         if (storedQueens) {
             console.log(`storage.getData: queens.queens array retrieved from local storage`);
@@ -204,88 +204,6 @@ const createInfoBox = function() {
     universalControl.infoCloseListener();
 }
 
-const createSettingsBox = function() {
-    const settingsDiv = document.createElement("div");
-    settingsDiv.id = "settings-div";
-
-    const headerDiv = document.createElement("div");
-    headerDiv.id = "settings-header-div";
-
-
-    const header = document.createElement("h3");
-    header.innerText = "Settings";
-    headerDiv.appendChild(header);
-
-    const closeButton = createCloseButton("settings-close-button");
-
-    headerDiv.appendChild(closeButton);
-
-    const settingsForm = document.createElement("form");
-    settingsForm.id = "settings-form";
-
-    const fieldSet = document.createElement("fieldset");
-    fieldSet.id = "points-fieldset";
-
-    const legend = document.createElement("legend");
-    legend.innerText = "Points per placement";
-
-    fieldSet.appendChild(legend);
-
-    const addInput = function(text) {
-        const div = document.createElement("div");
-        const id = points.points.find(a => a.placement === text).id;
-        div.className = "settings-input";
-
-        const label = document.createElement("label");
-        label.for = `points-settings-${id}`;
-        label.innerText = text;
-
-        const input = document.createElement("input");
-        input.type = "number";
-        input.label = id;
-        input.id = `points-settings-${id}`; 
-        input.value = points.points.find(a => a.placement === text).value;
-
-        div.appendChild(label);
-        div.appendChild(input);
-        fieldSet.appendChild(div);
-    };
-    
-    for (let i = 0; i < competitionData.placements.length; i++) {
-        if (competitionData.placements[i]!=="Out" && competitionData.placements[i]!=="Quit") {
-            addInput(competitionData.placements[i]);
-        }
-    }
-    // addInput("Win");
-    // addInput("Top 2");
-    // addInput("High");
-    // addInput("Safe");
-    // addInput("Low");
-    // addInput("Bottom");
-    // addInput("Eliminated");
-
-    const saveButton = document.createElement("button");
-    saveButton.type = "submit";
-    saveButton.innerText = "Save";
-    saveButton.id = "settings-save-button";
-
-    const resetButton = document.createElement("button");
-    resetButton.innerText = "Reset Points";
-    resetButton.id = "settings-reset-button";
-    
-    settingsDiv.appendChild(headerDiv);
-    settingsForm.appendChild(fieldSet);
-    settingsForm.appendChild(resetButton);
-    settingsForm.appendChild(saveButton);
-    settingsDiv.appendChild(settingsForm);
-    document.body.appendChild(settingsDiv);
-
-    settingsDiv.style.display = "none";
-
-    universalControl.settingsCloseListener();
-    universalControl.settingsResetListener();
-    universalControl.settingsSaveListener();
-}
 
 const universalDisplay = (function() {
     const createHeading = function() {
@@ -323,7 +241,7 @@ const universalDisplay = (function() {
         const homeImg = document.createElement("img");
         homeImg.src = images.home;
         homeImg.alt = "Home";
-        
+
         homeLink.appendChild(homeButton);
         homeButton.appendChild(homeImg);
         rightDiv.appendChild(homeLink);
@@ -352,9 +270,6 @@ const universalDisplay = (function() {
         settingsImg.alt = "Settings";
         settings.appendChild(settingsImg);
         rightDiv.appendChild(settings);
-
-        createSettingsBox();
-        universalControl.settingsButtonListener();
     };
 
     const createFeedbackButton = function() {
@@ -399,7 +314,7 @@ const universalDisplay = (function() {
         document.body.appendChild(navDiv);
     };
 
-    return { createHeading, createButtons, createNavDiv, createInfoBox, createResetButton};
+    return { createHeading, createButtons, createNavDiv, createInfoBox, createResetButton, createCloseButton};
 })();
 
 
@@ -416,58 +331,11 @@ const universalControl = (function () {
         popUpStatus.infoOpen = false;
     }
 
-    const settingsClose = function () {
-        const settingsDiv = document.getElementById("settings-div");
-        settingsDiv.style.display = "none";
-        popUpStatus.settingsOpen = false;
-    }
-
     const infoCloseListener = function () {
         const infoCloseButton = document.getElementById("info-close-button");
 
         infoCloseButton.addEventListener("click", infoClose)
-    };
-
-    const settingsCloseListener = function () {
-        const settingsCloseButton = document.getElementById("settings-close-button");
-
-        settingsCloseButton.addEventListener("click", settingsClose);
-    };
-
-    const settingsSaveListener = function () {
-        const settingsSaveButton = document.getElementById("settings-save-button");
-
-        settingsSaveButton.addEventListener("click", function(e) {
-            e.preventDefault();
-            for (let i = 0; i < points.points.length; i++) {
-                const id = points.points[i].id;
-                const pointsValue = document.getElementById(`points-settings-${id}`).value;
-                points.points[i].value = pointsValue;
-                console.log(`universalControl.settingsSaveListener: Points for ${id} have been set to ${pointsValue}`);
-            }
-            storage.savePoints();
-            settingsClose();
-        })
-    }
-
-    const updateSettingsDisplay = function (pointsArray) {
-        for (let i = 0; i < pointsArray.length; i++){
-            const id = pointsArray[i].id;
-            const input = document.getElementById(`points-settings-${id}`);
-            input.value = pointsArray.find(a => a.id === id).value;
-        }
-    }
-
-    const settingsResetListener = function () {
-        const settingsResetButton = document.getElementById("settings-reset-button");
-
-        settingsResetButton.addEventListener("click", function(e) {
-            e.preventDefault();
-            points.points = points.initialPoints.slice();
-            storage.savePoints();
-            updateSettingsDisplay(points.points);
-        })
-    }
+    };    
 
     const infoButtonListener = function () {
         const infoButton = document.getElementById("info-button");
@@ -483,31 +351,16 @@ const universalControl = (function () {
         });
     };
 
-    const settingsButtonListener = function () {
-        const settingsButton = document.getElementById("settings-button");
-        const settingsDiv = document.getElementById("settings-div");
-
-        settingsButton.addEventListener("click", function() {
-            if (popUpStatus.infoOpen===false  && popUpStatus.settingsOpen===false) {
-                settingsDiv.style.display = "block";
-                popUpStatus.settingsOpen = true;
-                updateSettingsDisplay(points.points);
-            } else if (popUpStatus.settingsOpen===true) {
-                settingsClose();
-            }
-        });
-    };
-
     const resetResults = function() {
         for (let i = 0; i < queens.numberOfQueens; i++) {
-            queens.queens[i].placement = queens.queens[i].initialPlacement.slice();
-            queens.queens[i].return = queens.queens[i].initialReturn.slice();
-        };
+                queens.queens[i].placement = queens.queens[i].initialPlacement.slice();
+                queens.queens[i].return = queens.queens[i].initialReturn.slice();
+            };
 
-        storage.saveData();
+            storage.saveData();
     }
 
-    return {infoCloseListener, infoButtonListener, settingsCloseListener, settingsButtonListener, settingsResetListener, settingsSaveListener, updateSettingsDisplay, resetResults};
+    return {infoCloseListener, infoButtonListener, resetResults, popUpStatus};
 })()
 
 export {queens, competitionData, storage, currentStatus, universalDisplay, universalControl, images, points};

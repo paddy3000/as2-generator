@@ -245,13 +245,20 @@ const displayProgress = (function () {
     const refreshPPE = function () {
         const ppeScores = calculatePPE();
 
-        for (let i = 0; i < queens.numberOfQueens; i++) {
-            const PPECell = document.getElementById(`ppe-cell-queen${i}`);
-            PPECell.innerText=`${ppeScores[i].ppe}`;
+        if (settingsControl.updateDisplay[0] === true) {
+            for (let i = 0; i < queens.numberOfQueens; i++) {
+                const PPECell = document.getElementById(`ppe-cell-queen${i}`);
+                PPECell.innerText=`${ppeScores[i].ppe}`;
+            }
+    
+            graph.createGraph();
+            settingsControl.updateDisplay[0] = false;
+            console.log("displayProgress.refreshPPE: Chart and table updated");
+        } else {
+            console.log("displayProgress.refreshPPE: No update to chart or table");
         }
-
-        graph.createGraph();
-    };
+        
+        }
 
     return {createTable, refreshPPE, calculatePPE};
 })();
@@ -260,18 +267,32 @@ const control = (function () {
     const resetListener = function () {
         const resetButton = document.getElementById("reset-results");
         resetButton.addEventListener("click", function () {
-            universalControl.resetResults();
-            displayProgress.createTable();
-            graph.createGraph();
+            for (let i=0; i < queens.numberOfQueens; i++) {
+                if (JSON.stringify(queens.queens[i].placement)!==JSON.stringify(queens.queens[i].initialPlacement) || JSON.stringify(queens.queens[i].return)!==JSON.stringify(queens.queens[i].initialReturn)) {
+                    console.log(`control.resetListener: results for ${queens.queens[i].queen} to be reset`);
+                    
+                    settingsControl.updateDisplay[0]=true;
+                }
+            }
+            if (settingsControl.updateDisplay[0]===true) {
+                universalControl.resetResults();
+                displayProgress.createTable();
+                graph.createGraph();
+                console.log("control.resetListener: All results reset and table and chart updated");
+            } else {
+                console.log("control.resetListener: Results already equal to original results");
+                console.log(queens.queens[6].placement);
+                console.log(queens.queens[6].initialPlacement);
+            }
         });
     };
 
     const eventListeners = function () {
-        const settingsResetButton = document.getElementById("settings-reset-button");
-        const settingsSaveButton = document.getElementById("settings-save-button");
+        // const settingsResetButton = document.getElementById("settings-reset-button");
+        // const settingsSaveButton = document.getElementById("settings-save-button");
 
-        settingsResetButton.addEventListener("click", displayProgress.refreshPPE);
-        settingsSaveButton.addEventListener("click", displayProgress.refreshPPE);
+        // settingsResetButton.addEventListener("click", displayProgress.refreshPPE);
+        // settingsSaveButton.addEventListener("click", displayProgress.refreshPPE);
 
         resetListener();
     };
@@ -280,6 +301,198 @@ const control = (function () {
 
     return {eventListeners};
 })();
+
+const settingsControl = (function() {
+    const updateDisplay = [false];
+
+    // Create the settings box
+    // Initial display set to none
+    const createSettingsBox = function() {
+        // Overall container
+        const settingsDiv = document.createElement("div");
+        settingsDiv.id = "settings-div";
+    
+        // Header for settings box
+        const headerDiv = document.createElement("div");
+        headerDiv.id = "settings-header-div";
+
+        const header = document.createElement("h3");
+        header.innerText = "Settings";
+        headerDiv.appendChild(header);
+    
+        // Create close button
+        const closeButton = universalDisplay.createCloseButton("settings-close-button");
+        headerDiv.appendChild(closeButton);
+    
+        // Set up for form inputs
+        const settingsForm = document.createElement("form");
+        settingsForm.id = "settings-form";
+    
+        const fieldSet = document.createElement("fieldset");
+        fieldSet.id = "points-fieldset";
+    
+        const legend = document.createElement("legend");
+        legend.innerText = "Points per placement";
+    
+        fieldSet.appendChild(legend);
+    
+        // Create inputs for each of the objects in the points array
+        const addInput = function(text) {
+            const div = document.createElement("div");
+            const id = points.points.find(a => a.placement === text).id;
+            div.className = "settings-input";
+    
+            const label = document.createElement("label");
+            label.for = `points-settings-${id}`;
+            label.innerText = text;
+    
+            const input = document.createElement("input");
+            input.type = "number";
+            input.label = id;
+            input.id = `points-settings-${id}`; 
+            input.value = points.points.find(a => a.placement === text).value;
+    
+            div.appendChild(label);
+            div.appendChild(input);
+            fieldSet.appendChild(div);
+        };    
+        
+        for (let i = 0; i < competitionData.placements.length; i++) {
+            if (competitionData.placements[i]!=="Out" && competitionData.placements[i]!=="Quit") {
+                addInput(competitionData.placements[i]);
+            }
+        }
+    
+        // Create save button
+        const saveButton = document.createElement("button");
+        saveButton.type = "submit";
+        saveButton.innerText = "Save";
+        saveButton.id = "settings-save-button";
+    
+        // Create reset button
+        const resetButton = document.createElement("button");
+        resetButton.innerText = "Reset Points";
+        resetButton.id = "settings-reset-button";
+        
+        // Put everything together
+        settingsDiv.appendChild(headerDiv);
+        settingsForm.appendChild(fieldSet);
+        settingsForm.appendChild(resetButton);
+        settingsForm.appendChild(saveButton);
+        settingsDiv.appendChild(settingsForm);
+        document.body.appendChild(settingsDiv);
+    
+        // Hide on startup
+        settingsDiv.style.display = "none";
+    
+        // Add event listeners
+        settingsCloseListener();
+        settingsResetListener();
+        settingsSaveListener();
+    }
+
+    // Close option required for multiple buttons so set up as separate function
+    const settingsClose = function () {
+        const settingsDiv = document.getElementById("settings-div");
+        settingsDiv.style.display = "none";
+        universalControl.popUpStatus.settingsOpen = false;
+        displayProgress.refreshPPE(); 
+    }
+
+    // Add listener to main settings button to open and close the form
+    const settingsButtonListener = function () {
+        const settingsButton = document.getElementById("settings-button");
+        const settingsDiv = document.getElementById("settings-div");
+
+        settingsButton.addEventListener("click", function() {
+            if (universalControl.popUpStatus.infoOpen===false  && universalControl.popUpStatus.settingsOpen===false) {
+                settingsDiv.style.display = "block";
+                universalControl.popUpStatus.settingsOpen = true;
+                updateSettingsDisplay(points.points);
+            } else if (universalControl.popUpStatus.settingsOpen===true) {
+                settingsClose();
+            }
+        });
+    };
+
+    // Add functionality to close button
+    const settingsCloseListener = function () {
+        const settingsCloseButton = document.getElementById("settings-close-button");
+
+        settingsCloseButton.addEventListener("click", settingsClose);
+    };
+
+    const savePointsFromForm = function () {
+        const storedPoints = JSON.parse(localStorage.getItem("points"));
+
+        // Check each placement against the form and update if necessary
+        for (let i = 0; i < points.points.length; i++) {
+            const id = points.points[i].id;
+            const pointsValue = Number(document.getElementById(`points-settings-${id}`).value);
+            if (Number(points.points[i].value) !== Number(pointsValue)) {
+                console.log(`settingsControl.savePointsFromForm: Points for ${id} have been updated from ${points.points[i].value} to ${pointsValue}`);
+                points.points[i].value = pointsValue;
+            }
+        }
+
+        // If change to points then save new array
+        if (JSON.stringify(points.points)!==JSON.stringify(storedPoints)) { 
+            updateDisplay[0] = true;
+            storage.savePoints();
+        } else {
+            console.log("settingsControl.savePointsFromForm: No update made to points");
+        }
+    }
+
+    const settingsSaveListener = function () {
+        const settingsSaveButton = document.getElementById("settings-save-button");
+        settingsSaveButton.addEventListener("click", function(e) {
+            e.preventDefault();
+            savePointsFromForm();
+            settingsClose();
+        })
+    }
+
+    // Set values in form to points array
+    const updateSettingsDisplay = function (pointsArray) {
+        for (let i = 0; i < pointsArray.length; i++){
+            const id = pointsArray[i].id;
+            const input = document.getElementById(`points-settings-${id}`);
+            input.value = pointsArray.find(a => a.id === id).value;
+        }
+    };
+
+    // Reset points to initial values
+    const settingsResetListener = function () {
+        const settingsResetButton = document.getElementById("settings-reset-button");
+
+        settingsResetButton.addEventListener("click", function(e) {
+            e.preventDefault();
+            // Get latest values of points
+            savePointsFromForm();
+            
+            if (JSON.stringify(points.points)!==JSON.stringify(points.initialPoints)) {
+                // Set back to initial values
+                console.log("settingsControl.settingsResetButton: Points being reset to initialPoints");
+                points.points = JSON.parse(JSON.stringify(points.initialPoints));
+                storage.savePoints();
+                // Update numbers that appear in the form
+                updateSettingsDisplay(points.points);
+                // Update needed for visual displays
+                updateDisplay[0] = true;
+            } else {
+                console.log("settingsControl.settingsResetButton: points already equal to initialPoints");
+            }
+        })
+    };
+
+    const init = function() {
+        createSettingsBox();
+        settingsButtonListener();
+    }
+
+    return {init, updateDisplay};
+})()
 
 // Code to create the graph
 
@@ -390,14 +603,14 @@ const graph = (function () {
                         }
                     }
                 }
-              }
             }
-          });
+        }
+    });
 
-        chartDiv.innerHTML = "";
-        chartDiv.appendChild(h3);
-        chartDiv.appendChild(canvas);
-        chartDiv.appendChild(footnote);
+    chartDiv.innerHTML = "";
+    chartDiv.appendChild(h3);
+    chartDiv.appendChild(canvas);
+    chartDiv.appendChild(footnote);
     }
 
     return {createGraph}
@@ -411,3 +624,4 @@ storage.getData();
 displayGeneric.init();
 displayProgress.createTable();
 control.eventListeners();
+settingsControl.init();
