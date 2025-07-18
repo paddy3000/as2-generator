@@ -194,7 +194,8 @@ button:hover {
     box-sizing: border-box;
 }
 
-#synopsis {
+#synopsis,
+.results-chart-footnote {
     font-style: italic;
 }
 

@@ -284,6 +284,8 @@ const control = (function () {
 // Code to create the graph
 
 const graph = (function () {
+    const colours = ["#66c5cc", "#dcb0f2", "#f6cf71", "#f89c74", "#87c55f", "#9eb9f3", "#fe88b1", "#c9db74", "#8be0a4", "#b497e7", "#b3b3b3"];
+
     const createDatasets = function() {
         const datasets = new Array(queens.numberOfQueens);
         const ppeScores = displayProgress.calculatePPE();
@@ -291,7 +293,9 @@ const graph = (function () {
         for (let i = 0; i < queens.numberOfQueens; i++) {
             datasets[i] = {label: queens.queens[i].queen,
                            data: ppeScores[i].totalPoints,
-                           fill: false
+                           fill: false,
+                           borderColor: colours[i],
+                           borderWidth: 3
             }
         }
 
@@ -304,6 +308,10 @@ const graph = (function () {
         const h3 = document.createElement("h3");
         h3.innerText = "Total Points by Episode";
 
+        const footnote = document.createElement ("p");
+        footnote.innerText = "For easier comparison, click on a queen's name to remove them from the chart";
+        footnote.className = "results-chart-footnote";
+        
         const datasets = createDatasets();
         const labels = new Array(competitionData.numberOfWeeks);
         for (let i = 0; i < competitionData.numberOfWeeks; i++) {
@@ -328,9 +336,11 @@ const graph = (function () {
                         labels: {
                             font: {
                                 family: fontFamily,
-                                size: 14
+                                size: 16
                             },
-                            color: textColour
+                            color: textColour,
+                            usePointStyle: true,
+                            pointStyle: "line"
                         },
                         position: "bottom",
                         padding: 20
@@ -387,6 +397,7 @@ const graph = (function () {
         chartDiv.innerHTML = "";
         chartDiv.appendChild(h3);
         chartDiv.appendChild(canvas);
+        chartDiv.appendChild(footnote);
     }
 
     return {createGraph}
