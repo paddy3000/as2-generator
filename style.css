@@ -44,7 +44,7 @@ body {
     text-align: center;
     box-sizing: border-box;
     padding: 0;
-    padding-top: var(--header-size);
+    /* padding-top: var(--header-size); */
     margin: 0;
     background-color: var(--white-colour);
     display: flex;
@@ -83,12 +83,12 @@ a {
     background-color: var(--light-accent);
     padding: 0 min(2vw, calc(var(--button-size)*0.4));
     border-bottom: 0.2rem var(--dark-accent) solid;
-    position: fixed;  
-    top: 0;
-    right: 0;
-    left: 0;
-    z-index: 999;
-    width: 100w;
+    /* position: fixed;   */
+    /* top: 0; */
+    /* right: 0; */
+    /* left: 0; */
+    /* z-index: 999; */
+    width: 98vw;
     height: var(--header-size);
 }
 
@@ -278,7 +278,7 @@ button:hover {
 
     display: flex;
     flex-wrap: wrap;
-    gap: min(2rem, 0.15rem);
+    gap: min(2rem, 10rem);
     padding: 2rem 0;
     justify-content: center;
     width: min(100vw, calc(var(--queen-image-width)*7));
