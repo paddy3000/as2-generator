@@ -414,7 +414,7 @@ select#week-select {
     margin: 4rem 0 2rem 0 ;
     border: var(--lighter-accent) 0.5rem solid;
     border-radius: 2rem;
-    padding: 0 2rem 1rem 2rem;
+    padding: 0 min(1rem, 2vw) 1rem min(2rem, 2vw);
 }
 
 #results-table-div {

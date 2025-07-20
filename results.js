@@ -571,7 +571,7 @@ const graph = (function () {
                         text: "Episode",
                         display: true,
                         font: {
-                            size: 20,
+                            size: 18,
                             weight: 'bold',
                             family: fontFamily
                         },
@@ -581,7 +581,7 @@ const graph = (function () {
                     ticks: {
                         color: textColour,
                         font: {
-                            size: 16,
+                            size: 14,
                             family: fontFamily
                         }
                     }
@@ -592,17 +592,17 @@ const graph = (function () {
                         text: "Total Points",
                         display: true,
                         font: {
-                            size: 20,
+                            size: 18,
                             weight: 'bold',
                             family: fontFamily
                         },
                         color: textColour,
-                        padding: { bottom: 20}
+                        padding: { bottom: 10}
                     },
                     ticks: {
                         color: textColour,
                         font: {
-                            size: 16,
+                            size: 14,
                             family: fontFamily
                         }
                     }
