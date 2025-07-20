@@ -73,6 +73,7 @@ h2 {
 
 a {
     text-decoration: none;
+    color: black;
 }
 
 #main-heading {
@@ -118,6 +119,7 @@ button {
 
     font-size: 1.1rem;
     font-weight: bold;
+    color: black;
 
     padding: 0.2rem 1rem;
     border-radius: 5rem;
@@ -202,7 +204,7 @@ button:hover {
 #info-div,
 #settings-div {
     border: 0.3rem solid var(--dark-accent);
-    padding: 1rem 3rem;
+    padding: 1rem min(3rem, 7vw);
     background-color: var(--lightest-accent);
     position: fixed;
     z-index: 999;
@@ -211,7 +213,7 @@ button:hover {
 
 #info-div {
     top: 20vh;
-    width: 50vw;
+    /* width: 50vw; */
 }
 
 #settings-div {
@@ -272,7 +274,7 @@ button:hover {
 
 
 #queens-div {
-    --queen-image-width: min(40vw, 12rem);
+    --queen-image-width: min(35vw, 12rem);
 
     display: flex;
     flex-wrap: wrap;
@@ -377,6 +379,7 @@ input[type=radio] {
 
 select {
     font-size: 1.1rem;
+    color: black;
     padding: 0.2rem 1rem;
     border-radius: 0.4rem;
     border: 0;
@@ -447,7 +450,7 @@ tr.out {
 }
 
 #results-table {
-    font-size: 1.5rem;
+    font-size: min(1.5rem, 4vw);
 }
 
 td.result {

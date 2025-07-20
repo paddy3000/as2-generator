@@ -264,6 +264,7 @@ const displayProgress = (function () {
 })();
 
 const control = (function () {
+    ///////////////// Update name of this to placement reset or something to differentiate from points reset
     const resetListener = function () {
         const resetButton = document.getElementById("reset-results");
         resetButton.addEventListener("click", function () {
@@ -278,17 +279,16 @@ const control = (function () {
                 universalControl.resetResults();
                 displayProgress.createTable();
                 graph.createGraph();
+                settingsControl.updateDisplay[0]=false;
                 console.log("control.resetListener: All results reset and table and chart updated");
             } else {
                 console.log("control.resetListener: Results already equal to original results");
-                console.log(queens.queens[6].placement);
-                console.log(queens.queens[6].initialPlacement);
             }
         });
     };
 
     const eventListeners = function () {
-        // const settingsResetButton = document.getElementById("settings-reset-button");
+        // const settingsResetButton = document.getElementById("settngs-reset-button");
         // const settingsSaveButton = document.getElementById("settings-save-button");
 
         // settingsResetButton.addEventListener("click", displayProgress.refreshPPE);
