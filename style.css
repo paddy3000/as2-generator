@@ -129,9 +129,11 @@ button {
     background: var(--white-colour);
 }
 
-button:hover {
-    background: var(--button-hover-colour);
-    cursor: pointer;
+@media (hover: hover) {
+    button:hover {
+        background: var(--button-hover-colour);
+        cursor: pointer;
+    }
 }
 
 #main-heading-right button {
@@ -531,13 +533,21 @@ tfoot {
 tfoot td {
     padding: 1rem 0;  }
 
-/* #feedback-form-div {
-    display: flex;
-    align-items: center;
-    width: min(100vw, 30rem);
-} */
+#feedback-form-div {
+    /* display: flex; */
+    /* align-items: center; */
+    /* width: min(100vw, 30rem); */
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding-top: 140%;
+}
 
-iframe {
-    border: 0;
-    margin: 2rem 0 0 0;
-} 
+#feedback-form-div iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
