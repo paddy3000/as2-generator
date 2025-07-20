@@ -344,6 +344,7 @@ button:hover {
     display: flex;
     justify-content: center;
     margin: 1rem 0 0 0;
+    font-size: min(1.1rem, 3.3vw);
 }
 
 .radio-elements {
@@ -378,7 +379,7 @@ input[type=radio] {
 }
 
 select {
-    font-size: 1.1rem;
+    font-size: min(1.1rem, 5vw);
     color: black;
     padding: 0.2rem 1rem;
     border-radius: 0.4rem;
