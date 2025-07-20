@@ -235,7 +235,7 @@ const displayProgress = (function () {
         const tfootTr = document.createElement("tr");
         const tfootTrTd = document.createElement("td");
         tfootTrTd.colSpan=queens.numberOfQueens+2;
-        tfootTrTd.innerText = "To see points used in PPE calculation, open Settings in the top right corner";
+        tfootTrTd.innerText = "To see points used in PPE calculation, open Settings in the top right corner of the page";
         tfootTr.appendChild(tfootTrTd);
         tfoot.appendChild(tfootTr);
 
@@ -597,7 +597,7 @@ const graph = (function () {
                             family: fontFamily
                         },
                         color: textColour,
-                        padding: { bottom: 10}
+                        padding: { bottom: 7}
                     },
                     ticks: {
                         color: textColour,
