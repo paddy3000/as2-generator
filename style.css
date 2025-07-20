@@ -278,7 +278,7 @@ button:hover {
 
     display: flex;
     flex-wrap: wrap;
-    gap: 2rem;
+    gap: min(2rem, 0.15rem);
     padding: 2rem 0;
     justify-content: center;
     width: min(100vw, calc(var(--queen-image-width)*7));
@@ -386,8 +386,10 @@ select {
     text-align: center;
 }
 
-select:hover {
-    cursor: pointer;
+@media (hover: hover) {
+    select:hover {
+        cursor: pointer;
+    }
 }
 
 select#week-select {
