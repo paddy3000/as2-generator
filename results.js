@@ -210,6 +210,10 @@ const displayProgress = (function () {
                 if (j === competitionData.numberOfWeeks-1) {
                     weekCell.className += " finale-cell";
                 };
+
+                if (queens.queens[i].return[j]) {
+                    weekCell.className += " returning";
+                }
                 weekCell.appendChild(weekResult);
                 row.appendChild(weekCell);
             }

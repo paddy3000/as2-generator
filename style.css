@@ -525,6 +525,11 @@ th.queen-name {
     background-color: var(--elimfinale-color);
 }
 
+#results-table td.result.returning {
+    border: lime 0.3rem solid;
+}
+
+
 tfoot {
     font-size: 1.3rem;
     font-style: italic;  
