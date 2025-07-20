@@ -455,7 +455,7 @@ tr.out {
 }
 
 #results-table {
-    font-size: min(1.5rem, 4vw);
+    font-size: min(1.5rem, 4vw, 4vh);
 }
 
 td.result {
