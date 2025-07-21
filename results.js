@@ -1,6 +1,8 @@
 import { queens, competitionData, storage, universalDisplay, universalControl, points} from "./script.js";
 
+// Functions for generic display items
 const displayGeneric = (function() {
+    // Create heading and div that it sits inside
     const createHeaders = function() {
         const subheadingDiv = document.createElement("div");
         subheadingDiv.id = "results-subheading";
@@ -11,9 +13,9 @@ const displayGeneric = (function() {
 
         subheadingDiv.appendChild(subheading);
         document.body.appendChild(subheadingDiv);
-        console.log("displayGeneric.createHeaders: Subheading created");
     };
     
+    // Create div for results chart and table, including inner divs for each
     const createResultsDiv = function () {
         const resultsDiv = document.createElement("div");
         resultsDiv.id = "results-div";
@@ -30,6 +32,7 @@ const displayGeneric = (function() {
         document.body.appendChild(resultsDiv);
     };
 
+    // Create div for buttons at the bottom of the screen
     const createNavDiv = function() {
         universalDisplay.createNavDiv();
         const navDiv = document.getElementById("nav-div");
@@ -37,6 +40,7 @@ const displayGeneric = (function() {
         universalDisplay.createResetButton("nav-div");
     };
 
+    // Put together all functions required on opening the page including some from script.js
     const init = function () {
         universalDisplay.createHeading();
         universalDisplay.createButtons(true, true, true, true);
@@ -50,6 +54,7 @@ const displayGeneric = (function() {
     return { init };
 })();
 
+// Functions that control the display of progress items
 const displayProgress = (function () {
     // Format to change full typed out results to what appears in the results table
     const formatResult = function(result) {
@@ -61,21 +66,26 @@ const displayProgress = (function () {
 
     // Points per episode function
     const resultPoints = function(result) {
+        // Get value from the points object where points.points.placement is equal to the placement for the queen
         const value = result!=="Quit" ? points.points.find(a => a.placement === result).value : 0;
         return Number(value);
     }
 
     // Function to create object with elimination order for the queens
     const eliminationOrder = function () {
+        // Create array to store the number of weeks in the competition for each queen
         const weeksInCompetition = new Array(queens.numberOfQueens);
+
         for (let i=0; i < queens.numberOfQueens; i++) {
-            var lastWeekIn=1;
-            var finaleResult = 0;
+            // Initialise lastWeekIn and finaleResult, these will be updated in the next step
+            let lastWeekIn=1;
+            let finaleResult = 0;
 
             // Get last week where queen is not "Out"
             for (let j=0; j < competitionData.numberOfWeeks; j++){
                 if (queens.queens[i].placement[j]!=="Out") {
                     lastWeekIn=j+1;
+                    // Add value for finaleResult so that queens who all make it to the end can be sorted
                     if (j===competitionData.numberOfWeeks-1) {
                         if (queens.queens[i].placement[j]==="Winner") {finaleResult=1};
                         if (queens.queens[i].placement[j]==="Runner Up") {finaleResult=2};
@@ -85,6 +95,7 @@ const displayProgress = (function () {
                 };
             }
 
+            // Create an object for each queen with the information needed for creating the table
             weeksInCompetition[i]={index: i,
                                    queen: queens.queens[i].queen,
                                    weeks: lastWeekIn,
@@ -99,15 +110,19 @@ const displayProgress = (function () {
         return weeksInCompetition;        
     }
 
+    // Function to calculate totalPoints and points per episode for each queen
     const calculatePPE = function () {
+        // Create array to store objects for each queen
         const ppeScores = new Array(queens.numberOfQueens);
 
         for (let i = 0; i < queens.numberOfQueens; i++) {
-            var weeksInCompetition=0;
-            var totalPoints=0;
-            const totalPointsArray = new Array(competitionData.numberOfWeeks);
+            // Initialise weeksInCompetition and totalPoints variables
+            let weeksInCompetition=0;
+            let totalPoints=0;
+            const totalPointsArray = new Array(competitionData.numberOfWeeks); // totalPointsArray will track a running total of points to use in the chart
 
             for (let j = 0; j < competitionData.numberOfWeeks; j++) {
+                // If queen is still in the competition then increase weeksInCompetition and keep track of total points up to that point
                 if (queens.queens[i].placement[j]!=="Out" && queens.queens[i].placement[j]!=="Quit" && competitionData.competitiveEpisode[j]) {
                     weeksInCompetition++;
                     totalPoints += resultPoints(queens.queens[i].placement[j]);
@@ -116,9 +131,11 @@ const displayProgress = (function () {
                 if (queens.queens[i].placement[j]!=="Out") {totalPointsArray[j] = totalPoints};
             }
 
+            // Calculate points per episode
             const ppe = totalPoints / weeksInCompetition;
             const ppeRounded = Math.round(ppe*100)/100;
 
+            // Create an object for each queen with the information needed for the display elements
             ppeScores[i] = {index: i,
                             queen: queens.queens[i].queen,
                             ppe: ppeRounded,
@@ -129,6 +146,7 @@ const displayProgress = (function () {
         return ppeScores;
     }
 
+    // Create results table
     const createTable = function () {
         const resultsTable = document.getElementById("results-table-div");
 
@@ -218,6 +236,7 @@ const displayProgress = (function () {
                 row.appendChild(weekCell);
             }
 
+            // Add PPE scores to last column
             const ppeScores = calculatePPE();
             const ppe = document.createElement("td");
             ppe.innerText = `${ppeScores[i].ppe}`;
@@ -239,6 +258,7 @@ const displayProgress = (function () {
         tfootTr.appendChild(tfootTrTd);
         tfoot.appendChild(tfootTr);
 
+        // Put everything together
         tbl.appendChild(tblHeader);
         tbl.appendChild(tblBody);
         tbl.appendChild(tfoot);
@@ -246,15 +266,18 @@ const displayProgress = (function () {
         resultsTable.appendChild(tbl);
     };
 
+    // Function to update PPE scores in table if number of points per placement is changed
     const refreshPPE = function () {
         const ppeScores = calculatePPE();
 
         if (settingsControl.updateDisplay[0] === true) {
+            // Update innerText of PPE column in table
             for (let i = 0; i < queens.numberOfQueens; i++) {
                 const PPECell = document.getElementById(`ppe-cell-queen${i}`);
                 PPECell.innerText=`${ppeScores[i].ppe}`;
             }
     
+            // Update graph to use the new scores
             graph.createGraph();
             settingsControl.updateDisplay[0] = false;
             console.log("displayProgress.refreshPPE: Chart and table updated");
@@ -268,17 +291,20 @@ const displayProgress = (function () {
 })();
 
 const control = (function () {
-    ///////////////// Update name of this to placement reset or something to differentiate from points reset
+    // Reset Results button listener
     const resetListener = function () {
         const resetButton = document.getElementById("reset-results");
         resetButton.addEventListener("click", function () {
+            // Check if there are any queens where their current placement is not equal to their initial placement
             for (let i=0; i < queens.numberOfQueens; i++) {
                 if (JSON.stringify(queens.queens[i].placement)!==JSON.stringify(queens.queens[i].initialPlacement) || JSON.stringify(queens.queens[i].return)!==JSON.stringify(queens.queens[i].initialReturn)) {
                     console.log(`control.resetListener: results for ${queens.queens[i].queen} to be reset`);
                     
                     settingsControl.updateDisplay[0]=true;
                 }
-            }
+            };
+
+            // If any queens have had placement updates then update the results table and chart
             if (settingsControl.updateDisplay[0]===true) {
                 universalControl.resetResults();
                 displayProgress.createTable();
@@ -291,17 +317,9 @@ const control = (function () {
         });
     };
 
-    const eventListeners = function () {
-        // const settingsResetButton = document.getElementById("settngs-reset-button");
-        // const settingsSaveButton = document.getElementById("settings-save-button");
-
-        // settingsResetButton.addEventListener("click", displayProgress.refreshPPE);
-        // settingsSaveButton.addEventListener("click", displayProgress.refreshPPE);
-
+     const eventListeners = function () {
         resetListener();
     };
-
-
 
     return {eventListeners};
 })();
@@ -499,10 +517,11 @@ const settingsControl = (function() {
 })()
 
 // Code to create the graph
-
 const graph = (function () {
+    // Select colours to match overall scheme
     const colours = ["#66c5cc", "#dcb0f2", "#f6cf71", "#f89c74", "#87c55f", "#9eb9f3", "#fe88b1", "#c9db74", "#8be0a4", "#b497e7", "#b3b3b3"];
 
+    // Use queens object to create datasets objects that will work with Chart.js formatting
     const createDatasets = function() {
         const datasets = new Array(queens.numberOfQueens);
         const ppeScores = displayProgress.calculatePPE();
@@ -519,7 +538,9 @@ const graph = (function () {
         return datasets;
     };
 
+    // Create the graph
     const createGraph = function() {
+        // Create div and add header and footnote
         const chartDiv = document.getElementById("results-chart-div");
 
         const h3 = document.createElement("h3");
@@ -529,6 +550,7 @@ const graph = (function () {
         footnote.innerText = "For easier comparison, click on a queen's name to remove them from the chart";
         footnote.className = "results-chart-footnote";
         
+        // Create datasets and labels objects
         const datasets = createDatasets();
         const labels = new Array(competitionData.numberOfWeeks);
         for (let i = 0; i < competitionData.numberOfWeeks; i++) {
@@ -538,9 +560,11 @@ const graph = (function () {
         const canvas = document.createElement("canvas");
         canvas.id = "results-chart";
 
+        // Select font characteristics that will be reused for a few different chart elements
         const fontFamily = "Rubik";
         const textColour = "black";
 
+        // Create the chart
         const chart = new Chart(canvas, {
             type: 'line',
             data: {
@@ -549,7 +573,8 @@ const graph = (function () {
             },
             options: {
                 plugins: {
-                    legend: {
+                    // Plot legend attributes
+                    legend: { 
                         labels: {
                             font: {
                                 family: fontFamily,
@@ -565,8 +590,10 @@ const graph = (function () {
                 },
             responsive: true,
             maintainAspectRatio: false,
+            // x and y axes attributes
             scales: {
                 x: {
+                    // Axis title
                     title: {
                         text: "Episode",
                         display: true,
@@ -578,6 +605,7 @@ const graph = (function () {
                         color: textColour,
                         padding: {bottom: 20, top: 10}
                     },
+                    // Axis tick marks
                     ticks: {
                         color: textColour,
                         font: {
@@ -588,6 +616,7 @@ const graph = (function () {
                 },
                 y: {
                     beginAtZero: true,
+                    // Axis title
                     title: {
                         text: "Total Points",
                         display: true,
@@ -599,6 +628,7 @@ const graph = (function () {
                         color: textColour,
                         padding: { bottom: 7}
                     },
+                    // Axis tick marks
                     ticks: {
                         color: textColour,
                         font: {
@@ -611,6 +641,7 @@ const graph = (function () {
         }
     });
 
+    // Put everything together
     chartDiv.innerHTML = "";
     chartDiv.appendChild(h3);
     chartDiv.appendChild(canvas);
@@ -623,7 +654,6 @@ const graph = (function () {
 
 
 // Run everything
-
 storage.getData();
 displayGeneric.init();
 displayProgress.createTable();
