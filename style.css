@@ -1,10 +1,13 @@
+/* Font to use throughout document */
 @font-face {
     font-family: Rubik;
     src: url(fonts/Rubik-VariableFont_wght.ttf);
     font-style: normal;
 }
 
+/* Set colours that will be used throughout */
 :root {
+    /* Size of border around queen box */
     --queen-border-size: 0.6rem;
     
     /* Colours for different placements */
@@ -20,9 +23,6 @@
     --elimfinale-color: rgb(223, 143, 107);
 
     --white-colour: #F7F4EB;
-    /* --dark-accent: #431C52;
-    --light-accent: #BECCE8;
-    --lighter-accent: #E6E0EC; */
 
     --light-accent: rgba(234,195,217,255);
     --lighter-accent: rgb(224, 212, 219);
@@ -32,19 +32,23 @@
 
     --header-font: Rubik;
 
+    /* Size of buttons that will appear in the main header */
     --button-size: min(3.6rem, 10vw);
     --header-size: calc(1.8*var(--button-size));
 }
 
 * {
-    font-family: Rubik, Limelight, Arial, Helvetica, sans-serif;
+    font-family: Rubik, Arial, Helvetica, sans-serif;
 }
+
+/**********************/
+/* General attributes */
+/**********************/
 
 body {
     text-align: center;
     box-sizing: border-box;
     padding: 0;
-    /* padding-top: var(--header-size); */
     margin: 0;
     background-color: var(--white-colour);
     display: flex;
@@ -53,15 +57,12 @@ body {
 }
 
 h1 {
-    /* box-shadow: -0.3rem 0.3rem black; */
     border: 0.2rem solid var(--dark-accent);
     background: white;
     border-radius: 3rem;
     padding: 0.3rem 1rem;
     font-family: var(--header-font);
     font-size: min(2rem, 5vw);
-    /* font-style: italic; */
-    /* font-weight: normal; */
 }
 
 h2 {
@@ -76,41 +77,6 @@ a {
     color: black;
 }
 
-#main-heading {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: var(--light-accent);
-    padding: 0 min(2vw, calc(var(--button-size)*0.4));
-    border-bottom: 0.2rem var(--dark-accent) solid;
-    /* position: fixed;   */
-    /* top: 0; */
-    /* right: 0; */
-    /* left: 0; */
-    /* z-index: 999; */
-    width: 98vw;
-    height: var(--header-size);
-}
-
-#main-heading h1 {
-    /* margin: min(0.01*var(--button-size), 2vh); */
-}
-
-#nav-div {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--light-accent);
-    border-top: 0.2rem var(--dark-accent) solid;
-    padding:  0;
-    padding: 1rem 0;
-    width: 100vw;
-}
-
-#main-heading-right {
-    display: flex;
-}
 
 button {
     display: flex;
@@ -136,6 +102,26 @@ button {
     }
 }
 
+/****************/
+/* Main heading */
+/****************/
+
+#main-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--light-accent);
+    padding: 0 min(2vw, calc(var(--button-size)*0.4));
+    border-bottom: 0.2rem var(--dark-accent) solid;
+    width: 98vw;
+    height: var(--header-size);
+}
+
+#main-heading-right {
+    display: flex;
+}
+
+/* Adjust size of the buttons and the elements that go inside them depending on screen size */
 #main-heading-right button {
     height: var(--button-size);
     width: var(--button-size);
@@ -159,26 +145,15 @@ button {
     padding: 0 0 calc(0.06*var(--button-size)) 0 ;
 }
 
-
-
 #settings-button {
     padding: calc(0.1*var(--button-size)) calc(0.17*var(--button-size));
 }
 
-.arrow-button  {
-    height: 2.5rem;
-    width: 2.5rem;
-    margin: 0;
-    padding: 0;
-}
-
-.arrow-button > img {
-    height: 2rem;
-    width: 2rem;
-}
+/********************************/
+/* Subheadings and episode info */
+/********************************/
 
 .subheading-div {
-    /* background-color: var(--lighter-accent); */
     border: var(--lighter-accent) 0.4rem solid;
     border-radius: 4rem;
     color: var(--dark-accent);
@@ -203,6 +178,82 @@ button {
     font-style: italic;
 }
 
+/******************/
+/* Navigation div */
+/******************/
+
+#nav-div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--light-accent);
+    border-top: 0.2rem var(--dark-accent) solid;
+    padding:  0;
+    padding: 1rem 0;
+    width: 100vw;
+}
+
+/* Arrows */
+.arrow-button  {
+    height: 2.5rem;
+    width: 2.5rem;
+    margin: 0;
+    padding: 0;
+}
+
+.arrow-button > img {
+    height: 2rem;
+    width: 2rem;
+}
+
+/* Weeks dropdown */
+#nav-weeks {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
+#nav-results {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    padding-top: 1rem;
+}
+
+select {
+    font-size: min(1.1rem, 5vw);
+    color: black;
+    padding: 0.2rem 1rem;
+    border-radius: 0.4rem;
+    border: 0;
+    text-align: center;
+}
+
+select#week-select {
+    border: rgba(50,17,35,255) 0.15rem solid;
+    background-color: var(--white-colour);
+    color: var(--dark-accent);
+    font-weight: bold;
+    padding: 0.3rem 1.2rem;
+}
+
+@media (hover: hover) {
+    select:hover {
+        cursor: pointer;
+    }
+}
+
+
+/*****************************************/
+/* Information and settings pop-up boxes */
+/*****************************************/
+
+/* General formatting */
+
 #info-div,
 #settings-div {
     border: 0.3rem solid var(--dark-accent);
@@ -215,24 +266,57 @@ button {
 
 #info-div {
     top: 20vh;
-    /* width: 50vw; */
 }
 
 #settings-div {
     width: auto;
     top: 20vh;
-    /* left: 40vw; */
 }
 
-.close-button {
+/* Settings form */
+#settings-form {
     display: flex;
-    font-size: 1rem;
-    aspect-ratio: 1 / 1;
-    padding: 0.3rem;
-    margin-left: 0.6rem;
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
+    flex-direction: column;
+    gap: 1rem; 
+    text-align: center;
+}
+
+#settings-form label {
+   padding: 0 1rem 0 0;
+   font-weight: bold;
+}
+
+fieldset {
+  border: 0;
+}
+
+fieldset > legend {
+  font-weight: bold;
+  padding: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+}
+
+#settings-form > fieldset > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+  
+#settings-form input[type="number"] {
+  width: 60px;
+  padding: 4px;
+}  
+
+/* Close button */
+.close-button {
+  display: flex;
+  font-size: 1rem;
+  aspect-ratio: 1 / 1;
+  padding: 0.3rem;
+  margin-left: 0.6rem;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
 }
 
 .close-button-image {
@@ -240,70 +324,43 @@ button {
     height: 1rem;
 }
 
-#settings-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem; 
-    text-align: center;
-  }
+/**************/
+/* Queens div */
+/**************/
 
-  #settings-form label {
-    padding: 0 1rem 0 0;
-    font-weight: bold;
-  }
-
-  fieldset {
-    border: 0;
-  }
-
-  fieldset > legend {
-    font-weight: bold;
-    padding: 0 0 0.5rem 0;
-    font-size: 1.1rem;
-  }
-
-  #settings-form > fieldset > div {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  #settings-form input[type="number"] {
-    width: 60px;
-    padding: 4px;
-  }  
-
-
-
+/* Overall formatting of div with all the queens inside */
 #queens-div {
-    --queen-image-width: min(35vw, 12rem);
+    --queen-image-width: min(35vw, 12rem); /* Ensure at least two queens on each row even on small screens*/
 
     display: flex;
     flex-wrap: wrap;
     gap: min(2rem, 10rem);
     padding: 2rem 0;
     justify-content: center;
-    width: min(100vw, calc(var(--queen-image-width)*7));
+    width: min(100vw, calc(var(--queen-image-width)*7)); /* This ensures a max of 5 queens on each row when padding taken into account */
     justify-self: center;
-    width: 100w;
+    /* width: 100w; */
 }
 
+/* On large screens queen-div should have enough room to include radio buttons and placement dropdown so that all images line up even if both of these elements don't appear */
+/* On small screens height can be smaller to fit more queens on the screen */
 .queen-div {
     min-height: min(345px, 30vh);
 }
 
+/* Image box done separately so that coloured borders can be added to black and white images */
 .queen-image-box {
     width: var(--queen-image-width);
     height: var(--queen-image-width);
     padding: var(--queen-border-size);
-    /* border-radius: 1rem; */
 }
 
 .queen-image {
     width: var(--queen-image-width);;
-    /* height: 200px; */
 }
 
+/* Add border to queen images depending on placement that week */
+/* Padding is replaced with border so that all images line up with each other regardless of whether or not they have a border */
 .queen-image-box.win, 
 .queen-image-box.top2 {
     border: var(--win-color) solid var(--queen-border-size);
@@ -342,6 +399,7 @@ button {
     filter: grayscale(1);
 }
 
+/* Radio buttons */
 .returningRadio {
     display: flex;
     justify-content: center;
@@ -351,7 +409,7 @@ button {
 
 .radio-elements {
     display: block;
-    margin: 0 1rem;
+    margin: 0 0.6rem;
 }
 
 input[type=radio] {
@@ -364,50 +422,16 @@ input[type=radio] {
     text-align: center;
 }
 
-#nav-weeks {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1.5rem;
-    padding-bottom: 1.5rem;
-}
-
-#nav-results {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1.5rem;
-    padding-top: 1rem;
-}
-
-select {
-    font-size: min(1.1rem, 5vw);
-    color: black;
-    padding: 0.2rem 1rem;
-    border-radius: 0.4rem;
-    border: 0;
-    text-align: center;
-}
-
-@media (hover: hover) {
-    select:hover {
-        cursor: pointer;
-    }
-}
-
-select#week-select {
-    border: rgba(50,17,35,255) 0.15rem solid;
-    background-color: var(--white-colour);
-    color: var(--dark-accent);
-    font-weight: bold;
-    padding: 0.3rem 1.2rem;
-}
-
+/*********************/
 /* Results table CSS */
+/*********************/
 #results-div {
-    /* justify-content: center; */
     padding: 2rem 0;
     max-width: min(90rem, 100vw);
+}
+
+#results-table-div {
+    overflow-x: scroll;
 }
 
 #results-chart-div {
@@ -417,45 +441,44 @@ select#week-select {
     padding: 0 min(1rem, 1vw) 0 min(1rem, 1vw);
 }
 
-#results-table-div {
-    /* display: flex;
-    justify-content: center; */
-    overflow-x: scroll;
+/* Chart */
+canvas {
+    max-height: min(35rem, 80vh);
+}
+
+/* Table */
+#results-table {
+    font-size: min(1.5rem, 4vw, 4vh);
 }
 
 td, th {
   padding: 0.2rem;
 }
 
-canvas {
-    max-height: min(35rem, 80vh);
+th {
+    background-color: var(--lighter-accent);
+}
+  
+tr {
+  background-color: var(--white-colour);
 }
 
 thead > tr > th {
     background-color: var(--lighter-accent);
 }
-  
-th {
-  /* background-color: rgb(237, 237, 242); */
-  background-color: var(--lighter-accent);
+
+
+th.queen-name {
+    text-align: left;
+    padding-right: 1.5rem;
 }
 
-tr {
-    /* background-color: rgb(249, 249, 255); */
-    background-color: var(--white-colour);
-}
-
-.ppe-cell {
-    background: rgb(249, 249, 255);
-    padding: 0.2rem 1rem;
+.episode-type {
+    font-size: 0.9rem;
 }
 
 tr.out {
     background-color: auto;
-}
-
-#results-table {
-    font-size: min(1.5rem, 4vw, 4vh);
 }
 
 td.result {
@@ -467,19 +490,20 @@ td.result.finale-cell {
     padding: 0 1rem;
 }
 
-th.queen-name {
-    text-align: left;
-    padding-right: 1.5rem;
-}
-
 .ppe-cell {
-    padding-left: 1rem;
+    background: rgb(249, 249, 255);
+    padding: 0.2rem 1rem;
 }
 
-.episode-type {
-    font-size: 0.9rem;
+tfoot {
+    font-size: 1.3rem;
+    font-style: italic;  
 }
 
+tfoot td {
+    padding: 1rem 0;  }
+
+/* Set colours for different results */
 #results-table td.result.win,
 #results-table td.result.winner {
     background-color: var(--win-color);
@@ -529,19 +553,11 @@ th.queen-name {
     border: lime 0.3rem solid;
 }
 
-
-tfoot {
-    font-size: 1.3rem;
-    font-style: italic;  
-}
-
-tfoot td {
-    padding: 1rem 0;  }
+/*****************/
+/* Feedback form */
+/*****************/
 
 #feedback-form-div {
-    /* display: flex; */
-    /* align-items: center; */
-    /* width: min(100vw, 30rem); */
     position: relative;
     width: 100%;
     height: 100%;
