@@ -290,13 +290,13 @@ const universalDisplay = (function() {
         // Create setting button
         const settings = document.createElement("button");
         settings.id = "settings-button";
-        settings.appendChild(settingsImg);
         rightDiv.appendChild(settings);
 
         // Add image
         const settingsImg = document.createElement("img");
         settingsImg.src = images.settings;
         settingsImg.alt = "Settings";
+        settings.appendChild(settingsImg);
     };
 
     // Create feedback button
