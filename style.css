@@ -345,7 +345,7 @@ fieldset > legend {
 /* On large screens queen-div should have enough room to include radio buttons and placement dropdown so that all images line up even if both of these elements don't appear */
 /* On small screens height can be smaller to fit more queens on the screen */
 .queen-div {
-    min-height: min(345px, 30vh);
+    min-height: min(345px, 40vh);
 }
 
 /* Image box done separately so that coloured borders can be added to black and white images */
